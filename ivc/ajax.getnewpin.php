@@ -22,10 +22,11 @@ foreach($sKey as $i=>$key){
 }
 $time = time()+3600*24*365*10;
 $_SESSION["skey"] = $data34;
-$convert = implode(" ",$data34);
+$pinkey = base64_encode(json_encode($data34));
 
-echo "Enter digits";
+echo "Enter ONLY these digits, in this order:<br>";
                     
 foreach ($_SESSION["skey"] as $b=>$rr){ echo " #".intval($rr+1); } 
-echo "<br>of your Master PIN";
+echo "<br>of your Master PIN (or enter the full PIN).";
+echo '<span id="pinkey-data" data-pinkey="' . htmlspecialchars($pinkey, ENT_QUOTES, 'UTF-8') . '" style="display:none"></span>';
 ?>

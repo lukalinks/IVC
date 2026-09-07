@@ -184,4 +184,133 @@ function login ($uid,$password, $autologin=0)
 	}
 }
 
+function ivc_decrypt_master_pin($stored)
+{
+	$stored = (string) $stored;
+	if ($stored === '') {
+		return '';
+	}
+	$passcode = '1234';
+	$ivcode = '1234567812345678';
+	foreach (array('AES-128-CBC', 'aes128') as $method) {
+		$plain = @openssl_decrypt($stored, $method, $passcode, false, $ivcode);
+		if ($plain !== false && $plain !== '' && preg_match('/^[0-9]+$/', $plain)) {
+			return $plain;
+		}
+	}
+	if (preg_match('/^[0-9]+$/', $stored)) {
+		return $stored;
+	}
+	return '';
+}
+
+function ivc_pin_challenge_ok($masterPin, $entered, $skey)
+{
+	$masterPin = preg_replace('/\D/', '', (string) $masterPin);
+	$entered = preg_replace('/\D/', '', (string) $entered);
+	if ($masterPin === '' || $entered === '' || !is_array($skey) || count($skey) === 0) {
+		return false;
+	}
+	if ($entered === $masterPin) {
+		return true;
+	}
+	$needed = '';
+	foreach ($skey as $index => $value) {
+		$pos = is_numeric($index) ? (int) $index : (int) $value;
+		if (!isset($masterPin[$pos])) {
+			return false;
+		}
+		$needed .= $masterPin[$pos];
+	}
+	return $entered === $needed;
+}
+
+function ivc_login_skey($post = null)
+{
+	if (!is_array($post)) {
+		$post = $_POST;
+	}
+	if (!empty($_SESSION['skey']) && is_array($_SESSION['skey'])) {
+		return $_SESSION['skey'];
+	}
+	if (empty($post['pinkey'])) {
+		return null;
+	}
+	$raw = base64_decode((string) $post['pinkey'], true);
+	if ($raw === false) {
+		return null;
+	}
+	$skey = json_decode($raw, true);
+	if (!is_array($skey) || count($skey) === 0) {
+		return null;
+	}
+	$clean = array();
+	foreach ($skey as $index => $value) {
+		if (is_numeric($index) && is_numeric($value)) {
+			$clean[(int) $index] = (int) $value;
+		}
+	}
+	return count($clean) > 0 ? $clean : null;
+}
+
+function ivc_resolve_login_uid($pernumRaw)
+{
+	$digits = preg_replace('/\D/', '', (string) $pernumRaw);
+	if ($digits === '') {
+		return 0;
+	}
+	$pernum = (int) $digits;
+	$pernum2 = str_pad($digits, 10, '0', STR_PAD_LEFT);
+
+	$uid = (int) getSingleValue('pernum', "where pernum='$pernum2'", 'uid');
+	if ($uid > 0) {
+		return $uid;
+	}
+
+	if ($pernum > 0 && $pernum < 1000000000) {
+		$uid = (int) getSingleValue('pi_account', "where uid=$pernum and deleted=0", 'uid');
+		if ($uid > 0) {
+		 return $uid;
+		}
+	}
+
+	if ($pernum > 1000000000) {
+		$uid = $pernum - 1000000000;
+		if ($uid > 0) {
+			$found = (int) getSingleValue('pi_account', "where uid=$uid and deleted=0", 'uid');
+			if ($found > 0) {
+				return $found;
+			}
+		}
+	}
+
+	return 0;
+}
+
+function ivc_password_matches($uid, $plain)
+{
+	$uid = (int) $uid;
+	$plain = (string) $plain;
+	if ($uid <= 0 || $plain === '') {
+		return false;
+	}
+	$stored = getSingleValue('pi_account', "where uid=$uid", 'password');
+	if ($stored === '' || $stored === null) {
+		return false;
+	}
+	$candidates = array($plain, trim($plain));
+	foreach ($candidates as $candidate) {
+		if ($candidate === '') {
+			continue;
+		}
+		if (hash_equals($stored, md5($candidate))) {
+			return true;
+		}
+		if (hash_equals($stored, $candidate)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 ?>

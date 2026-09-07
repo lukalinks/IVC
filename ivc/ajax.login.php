@@ -7,21 +7,11 @@ include("functions.php");
 
 if($_POST)
 {
-    $pernum = isset($_POST['pernum']) ? $_POST['pernum'] : '';
-    $pwd_raw = isset($_POST['pwd']) ? $_POST['pwd'] : '';
+    $pernum = isset($_POST['pernum']) ? preg_replace('/\D/', '', (string) $_POST['pernum']) : '';
+    $pwd_raw = isset($_POST['pwd']) ? trim((string) $_POST['pwd']) : '';
     $pin = isset($_POST['pin']) ? (string)$_POST['pin'] : '';
 
-    $pernum=intval($pernum);
-    $pernum2=str_pad($pernum, 10, "0", STR_PAD_LEFT);
-    
-    //$pin=intval($pin);
-
-    $uid = getSingleValue("pernum", "where pernum='$pernum2'", "uid");
-
-    if($uid<=0)
-    {
-        $uid=$pernum-1000000000;
-    }
+    $uid = ivc_resolve_login_uid($pernum);
 
     if($uid<=0)
     {
@@ -32,9 +22,6 @@ if($_POST)
     {
         die("Error: Invalid Login Credentials (1002).");
     }
-
-    $pwd=md5($pwd_raw);
-    $pwd_esc = $GLOBALS ['mysqli']->real_escape_string ($pwd_raw);
 
     if($pin==='')
     {
@@ -76,62 +63,32 @@ if($_POST)
 		//exit;
     }
 
-    $valid = getSingleValue("pi_account", "where uid=$uid and password='$pwd'", "uid");
-    if($valid<=0)
+    if(!ivc_password_matches($uid, $pwd_raw))
     {
-        $valid = getSingleValue("pi_account", "where uid=$uid and password='$pwd_esc'", "uid");
-    }
-
-    if($valid<=0)
-    {
-        die("Error: Invalid Login Credentials (1005).");
+        die("Error: Invalid Login Credentials (1005). The password does not match this account on the local database.");
     }
 
     $userpin = getSingleValue("pi_account", "where uid=$uid", "pin");
 
-    if($userpin=='')
+    $pinn = ivc_decrypt_master_pin($userpin);
+    if($pinn==='')
     {
         die("Error: Invalid Login Credentials (1006).");
     }
 
-    $passcode = '1234';
-	$methodcode = 'aes128';
-
-	$ivcode = "1234567812345678";
-
-    $short_pin = $pin;
-
     $tim=time();
-				
-	$pinn =  openssl_decrypt($userpin, $methodcode, $passcode,false,$ivcode);
-    if($pinn===false || $pinn==='')
+
+    $skey = ivc_login_skey($_POST);
+    if(empty($skey))
     {
-        $pinn = $userpin;
+        die("Error: Invalid Login Credentials (1008). Refresh the page and try again.");
     }
 
-    $u = 0;
-    if(!empty($_SESSION["skey"]))
+    if(!ivc_pin_challenge_ok($pinn, $pin, $skey))
     {
-
-    
-        foreach($_SESSION["skey"] as $i=>$v)
-        {
-            //echo $data;exit();
-            if(!isset($pinn[$i]) || !isset($short_pin[$u]) || $pinn[$i]!=$short_pin[$u])
-            {
-                
-                $update="update pi_account set pin_tries=pin_tries+1, last_try=$tim where uid=$uid";
-                
-                $GLOBALS ['mysqli']->query ($update) or die ($GLOBALS ['mysqli']->error . __LINE__);
-                
-                die("Error: Invalid Login Credentials (1007).");
-            }	
-                $u++;			
-        }
-    }
-    else
-    {
-        die("Error: Invalid Login Credentials (1008).");
+        $update="update pi_account set pin_tries=pin_tries+1, last_try=$tim where uid=$uid";
+        $GLOBALS ['mysqli']->query ($update) or die ($GLOBALS ['mysqli']->error . __LINE__);
+        die("Error: Invalid Login Credentials (1007). Enter the requested PIN positions in that order, or your full Master PIN.");
     }
 
     if($uid>0)

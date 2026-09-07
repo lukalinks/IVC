@@ -63,7 +63,7 @@ td {
                                         <div class="card-body text-center">
                                             <p id="pinerr" class="alert alert-danger" style="display:none;"></p>
                                             <p id="pintext" style="color:#650B14; font-size:16px; min-height:48px;"></p>
-                                            <input class="form-control" value="" name="pin" id="pin" autocomplete="off" type="password" inputmode="numeric" placeholder="PIN digits" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:20px; max-width:245px;">
+                                            <input class="form-control" value="" name="pin" id="pin" autocomplete="off" type="password" inputmode="numeric" placeholder="3 requested digits" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:20px; max-width:245px;" onkeydown="if(event.key==='Enter'){ login(); return false; }">
                                             
                                             <table width="245" border="1" cellspacing="0" cellpadding="0" style="margin:0 auto; margin-top:10px; border-color:#cc0000;">
                                                 <tr>
@@ -112,89 +112,138 @@ var navbar = document.getElementById("navbar");
 if (navbar) {
     navbar.classList.add("sticky");
 }
+var currentUid = '';
+var currentPernum = '';
+var currentPinKey = '';
+var pinReady = false;
+
+function showLoginError(msg) {
+    $("#err").html(msg).show();
+    $("#divpin").hide();
+    $("#divlogin").show();
+    $("#pin").val('');
+    pinReady = false;
+    currentUid = '';
+    currentPernum = '';
+    currentPinKey = '';
+}
+
+function showPinError(msg) {
+    $("#pinerr").html(msg).show();
+}
 
 function startLogin()
 {
-    var pernum = $("#pernum").val().trim();
-    var pwd = $("#password").val();
+    if (typeof jQuery === 'undefined') {
+        alert('Page did not finish loading. Please refresh and try again.');
+        return false;
+    }
+    var pernum = $("#pernum").val().replace(/\D/g, '');
+    var pwd = $.trim($("#password").val());
+    $("#pernum").val(pernum);
     $("#err").hide();
+    $("#pinerr").hide();
 
     if (pernum === '' || pwd === '') {
-        $("#err").html("Please enter your account number and password.");
-        $("#err").show();
+        showLoginError("Please enter your account number and password.");
         return false;
     }
 
-    $("#pintext").html("Loading PIN prompt...");
+    pinReady = false;
+    currentUid = '';
+    currentPernum = '';
+    currentPinKey = '';
+    try {
+        sessionStorage.setItem('ivc_login_pernum', pernum);
+        sessionStorage.setItem('ivc_login_pwd', pwd);
+    } catch (e) {}
+    $("#pin").val('');
+    $("#pintext").html("Checking account...");
     $("#divlogin").hide();
     $("#divpin").show();
-    getnewpin();
+
+    fetch('safezone.login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pernum: pernum, password: pwd })
+    })
+    .then(function (response) { return response.json(); })
+    .then(function (result) {
+        if (!result.success) {
+            showLoginError(result.message || 'Invalid account number or password.');
+            return;
+        }
+        currentUid = String(result.uid || '');
+        currentPernum = String(result.pernum || pernum);
+        currentPinKey = String(result.pin_key || '');
+        pinReady = currentUid !== '' && currentPinKey.length === 3;
+        $("#pin").val('');
+        $("#pintext").html(result.prompt || 'Enter the 3 requested digits of your Master PIN.');
+    })
+    .catch(function () {
+        showLoginError('Unable to reach the login service. Check your connection and try again.');
+    });
+
     return false;
 }
 
 function login()
 {
-    var pernum=$("#pernum").val();
-    var pwd=$("#password").val();
-    var pin=$("#pin").val();
+    if (typeof jQuery === 'undefined') {
+        alert('Page did not finish loading. Please refresh and try again.');
+        return;
+    }
+    var pernum = $("#pernum").val().replace(/\D/g, '');
+    try {
+        if (!pernum && sessionStorage.getItem('ivc_login_pernum')) {
+            pernum = sessionStorage.getItem('ivc_login_pernum');
+        }
+        if (!currentPernum && pernum) {
+            currentPernum = pernum;
+        }
+    } catch (e) {}
+    var pin = $("#pin").val().replace(/\D/g, '');
+    $("#pin").val(pin);
     $("#err").hide();
     $("#pinerr").hide();
 
-    if(pin==='')
-    {
-        $("#pinerr").html("Please enter the requested PIN digits.");
-        $("#pinerr").show();
+    if (!pinReady || currentUid === '' || currentPinKey.length !== 3) {
+        showPinError("Wait for the PIN prompt to load, then enter the requested digits.");
         return;
     }
 
-    if(pernum!='' && pwd!='' && pin!='')
-    {
-        var request = $.ajax({
-            url: "ajax.login.php",
-            method: "POST",
-            data: { pernum : pernum, pwd : pwd, pin : pin },
-            dataType: "html"
-            });
-
-            request.done(function( msg ) {
-                msg = $.trim(msg);
-                if(msg!='success')
-                {
-                    $("#err").html(msg);
-                    $("#err").show();
-                    $("#divpin").hide();
-                    $("#divlogin").show();
-                    $("#pin").val('');
-                }
-                else
-                {
-                    document.location.href="home.php";
-                }
-            });
-
-            request.fail(function( jqXHR, textStatus ) {
-            $("#pinerr").html("Request failed: " + textStatus);
-            $("#pinerr").show();
-            $("#pin").val('');
-        });
+    if (pin === '') {
+        showPinError("Enter the 3 digits shown in the PIN prompt.");
+        return;
     }
-}
 
-function getnewpin()
-{
-        var request = $.ajax({
-            url: "ajax.getnewpin.php",
-            method: "POST",
-            dataType: "html"
-            });
+    $("#pintext").html("Checking login...");
 
-            request.done(function( msg ) {
-                $("#pintext").html(msg);
-            });
-
-            request.fail(function() {
-                $("#pintext").html("Unable to load PIN prompt. Please try again.");
-            });
+    fetch('safezone.verifyPin.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            uid: currentUid,
+            pernum: currentPernum,
+            pin: pin,
+            key: currentPinKey
+        })
+    })
+    .then(function (response) { return response.json(); })
+    .then(function (result) {
+        if (!result.success) {
+            showPinError(result.message || 'PIN verification failed.');
+            return;
+        }
+        try {
+            sessionStorage.removeItem('ivc_login_pernum');
+            sessionStorage.removeItem('ivc_login_pwd');
+        } catch (e) {}
+        window.location.href = result.redirect || 'home.php';
+    })
+    .catch(function () {
+        showPinError('Request failed. Use https://localhost/public_htmlIVC/ivc/login.php and try again.');
+    });
 }
 
 function keypad(td, key)
@@ -205,6 +254,7 @@ function keypad(td, key)
         {
             $('#divlogin').show(); 
             $('#divpin').hide();
+            pinReady = false;
         }
         else
         {
@@ -218,7 +268,9 @@ function keypad(td, key)
     }
     else
     {
-        $('#pin').val($('#pin').val()+key);
+        if ($('#pin').val().length < 6) {
+            $('#pin').val($('#pin').val()+key);
+        }
     }
 }       
 
