@@ -210,7 +210,17 @@ function startLogin()
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pernum: pernum, password: pwd })
     })
-    .then(function (response) { return response.json(); })
+    .then(function (response) {
+        return response.text().then(function (text) {
+            var result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                throw new Error('Login service returned an invalid response. The server may need a PHP update (8.0+).');
+            }
+            return result;
+        });
+    })
     .then(function (result) {
         if (!result.success) {
             showLoginError(result.message || 'Invalid account number or password.');
@@ -227,8 +237,8 @@ function startLogin()
             pinText.textContent = result.prompt || 'Enter the 3 requested digits of your Master PIN.';
         }
     })
-    .catch(function () {
-        showLoginError('Unable to reach the login service. Check your connection and try again.');
+    .catch(function (err) {
+        showLoginError((err && err.message) ? err.message : 'Unable to reach the login service. Check your connection and try again.');
     });
 
     return false;
@@ -287,7 +297,17 @@ function login()
             key: currentPinKey
         })
     })
-    .then(function (response) { return response.json(); })
+    .then(function (response) {
+        return response.text().then(function (text) {
+            var result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                throw new Error('PIN service returned an invalid response. Please try again.');
+            }
+            return result;
+        });
+    })
     .then(function (result) {
         if (!result.success) {
             showPinError(result.message || 'PIN verification failed.');
@@ -299,8 +319,8 @@ function login()
         } catch (e) {}
         window.location.href = result.redirect || 'home.php';
     })
-    .catch(function () {
-        showPinError('Request failed. Please refresh the page and try again.');
+    .catch(function (err) {
+        showPinError((err && err.message) ? err.message : 'Request failed. Please refresh the page and try again.');
     });
 }
 

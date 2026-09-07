@@ -50,6 +50,20 @@ function getSingleValue($table,$where,$field)
 	
 }	
 
+function ivc_get_value($table, $where, $field, $default = '')
+{
+	if (empty($GLOBALS['mysqli']) || $GLOBALS['mysqli']->connect_errno) {
+		return $default;
+	}
+	$select = 'SELECT ' . $field . ' FROM `' . $table . '` ' . $where;
+	$res = @$GLOBALS['mysqli']->query($select);
+	if (!$res || $res->num_rows === 0) {
+		return $default;
+	}
+	$row = $res->fetch_assoc();
+	return isset($row[$field]) ? $row[$field] : $default;
+}
+
 function getRows($table,$where,$field)
 {
 	$select = "SELECT ".$field." FROM `".$table."` ".$where;
