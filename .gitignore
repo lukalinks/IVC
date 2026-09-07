@@ -9,3 +9,4 @@ cgi-bin/
 *.tmp
 .env
 db-config*.php
+!ivc/db-config.example.php

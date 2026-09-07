@@ -32,8 +32,14 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 date_default_timezone_set('America/New_York');
 
-// Database Constants
-include("/home/db-config2.php");
+// Database Constants — project folder first, then production server path
+if (file_exists(__DIR__ . '/db-config2.php')) {
+	include __DIR__ . '/db-config2.php';
+} elseif (file_exists('/home/db-config2.php')) {
+	include '/home/db-config2.php';
+} else {
+	die('Database configuration not found. Copy ivc/db-config.example.php to ivc/db-config2.php.');
+}
 
 $mysqli = new mysqli (SERVER_IVC, USER_IVC, PASS_IVC, NAME_IVC);
 	
