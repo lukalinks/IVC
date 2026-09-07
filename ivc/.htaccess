@@ -1,13 +1,25 @@
-Options +FollowSymLinks
-RewriteEngine On
+DirectoryIndex index.php index.html
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([^/]*)$ /index.php?pernum=$1 [L,B]
-RewriteRule /?\.htaccess$ - [F,L]
+RewriteEngine On
 
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ index.php?pernum=$1 [L,QSA,B]
+
+RewriteRule ^\.htaccess$ - [F,L]
+
+<FilesMatch "^(db-config.*\.php|\.env)$">
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order allow,deny
+		Deny from all
+	</IfModule>
+</FilesMatch>
 
 # php -- BEGIN cPanel-generated handler, do not edit
 # Set the “ea-php54” package as the default “PHP” programming language.
