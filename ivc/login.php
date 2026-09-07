@@ -117,11 +117,36 @@ var currentPernum = '';
 var currentPinKey = '';
 var pinReady = false;
 
+function ivcEl(id) {
+    return document.getElementById(id);
+}
+
+function ivcShow(id) {
+    var node = ivcEl(id);
+    if (node) {
+        node.style.display = '';
+    }
+}
+
+function ivcHide(id) {
+    var node = ivcEl(id);
+    if (node) {
+        node.style.display = 'none';
+    }
+}
+
 function showLoginError(msg) {
-    $("#err").html(msg).show();
-    $("#divpin").hide();
-    $("#divlogin").show();
-    $("#pin").val('');
+    var err = ivcEl('err');
+    if (err) {
+        err.textContent = msg;
+        err.style.display = 'block';
+    }
+    ivcHide('divpin');
+    ivcShow('divlogin');
+    var pinInput = ivcEl('pin');
+    if (pinInput) {
+        pinInput.value = '';
+    }
     pinReady = false;
     currentUid = '';
     currentPernum = '';
@@ -129,20 +154,31 @@ function showLoginError(msg) {
 }
 
 function showPinError(msg) {
-    $("#pinerr").html(msg).show();
+    var pinErr = ivcEl('pinerr');
+    if (pinErr) {
+        pinErr.textContent = msg;
+        pinErr.style.display = 'block';
+    }
 }
 
 function startLogin()
 {
-    if (typeof jQuery === 'undefined') {
-        alert('Page did not finish loading. Please refresh and try again.');
-        return false;
+    var pernumInput = ivcEl('pernum');
+    var passwordInput = ivcEl('password');
+    var pernum = (pernumInput ? pernumInput.value : '').replace(/\D/g, '');
+    var pwd = (passwordInput ? passwordInput.value : '').trim();
+    if (pernumInput) {
+        pernumInput.value = pernum;
     }
-    var pernum = $("#pernum").val().replace(/\D/g, '');
-    var pwd = $.trim($("#password").val());
-    $("#pernum").val(pernum);
-    $("#err").hide();
-    $("#pinerr").hide();
+
+    var err = ivcEl('err');
+    var pinErr = ivcEl('pinerr');
+    if (err) {
+        err.style.display = 'none';
+    }
+    if (pinErr) {
+        pinErr.style.display = 'none';
+    }
 
     if (pernum === '' || pwd === '') {
         showLoginError("Please enter your account number and password.");
@@ -157,10 +193,17 @@ function startLogin()
         sessionStorage.setItem('ivc_login_pernum', pernum);
         sessionStorage.setItem('ivc_login_pwd', pwd);
     } catch (e) {}
-    $("#pin").val('');
-    $("#pintext").html("Checking account...");
-    $("#divlogin").hide();
-    $("#divpin").show();
+
+    var pinInput = ivcEl('pin');
+    if (pinInput) {
+        pinInput.value = '';
+    }
+    var pinText = ivcEl('pintext');
+    if (pinText) {
+        pinText.textContent = 'Checking account...';
+    }
+    ivcHide('divlogin');
+    ivcShow('divpin');
 
     fetch('safezone.login.php', {
         method: 'POST',
@@ -177,8 +220,12 @@ function startLogin()
         currentPernum = String(result.pernum || pernum);
         currentPinKey = String(result.pin_key || '');
         pinReady = currentUid !== '' && currentPinKey.length === 3;
-        $("#pin").val('');
-        $("#pintext").html(result.prompt || 'Enter the 3 requested digits of your Master PIN.');
+        if (pinInput) {
+            pinInput.value = '';
+        }
+        if (pinText) {
+            pinText.textContent = result.prompt || 'Enter the 3 requested digits of your Master PIN.';
+        }
     })
     .catch(function () {
         showLoginError('Unable to reach the login service. Check your connection and try again.');
@@ -189,11 +236,8 @@ function startLogin()
 
 function login()
 {
-    if (typeof jQuery === 'undefined') {
-        alert('Page did not finish loading. Please refresh and try again.');
-        return;
-    }
-    var pernum = $("#pernum").val().replace(/\D/g, '');
+    var pernumInput = ivcEl('pernum');
+    var pernum = (pernumInput ? pernumInput.value : '').replace(/\D/g, '');
     try {
         if (!pernum && sessionStorage.getItem('ivc_login_pernum')) {
             pernum = sessionStorage.getItem('ivc_login_pernum');
@@ -202,10 +246,21 @@ function login()
             currentPernum = pernum;
         }
     } catch (e) {}
-    var pin = $("#pin").val().replace(/\D/g, '');
-    $("#pin").val(pin);
-    $("#err").hide();
-    $("#pinerr").hide();
+
+    var pinInput = ivcEl('pin');
+    var pin = (pinInput ? pinInput.value : '').replace(/\D/g, '');
+    if (pinInput) {
+        pinInput.value = pin;
+    }
+
+    var err = ivcEl('err');
+    var pinErr = ivcEl('pinerr');
+    if (err) {
+        err.style.display = 'none';
+    }
+    if (pinErr) {
+        pinErr.style.display = 'none';
+    }
 
     if (!pinReady || currentUid === '' || currentPinKey.length !== 3) {
         showPinError("Wait for the PIN prompt to load, then enter the requested digits.");
@@ -217,7 +272,10 @@ function login()
         return;
     }
 
-    $("#pintext").html("Checking login...");
+    var pinText = ivcEl('pintext');
+    if (pinText) {
+        pinText.textContent = 'Checking login...';
+    }
 
     fetch('safezone.verifyPin.php', {
         method: 'POST',
@@ -242,34 +300,28 @@ function login()
         window.location.href = result.redirect || 'home.php';
     })
     .catch(function () {
-        showPinError('Request failed. Use https://localhost/public_htmlIVC/ivc/login.php and try again.');
+        showPinError('Request failed. Please refresh the page and try again.');
     });
 }
 
 function keypad(td, key)
 {
-    if(key=='b')
-    {
-        if($('#pin').val()=='')
-        {
-            $('#divlogin').show(); 
-            $('#divpin').hide();
+    var pinInput = ivcEl('pin');
+    if (!pinInput) {
+        return;
+    }
+
+    if (key === 'b') {
+        if (pinInput.value === '') {
+            ivcShow('divlogin');
+            ivcHide('divpin');
             pinReady = false;
+        } else {
+            pinInput.value = pinInput.value.slice(0, -1);
         }
-        else
-        {
-            var txt = $('#pin');
-            txt.val(txt.val().slice(0, -1));
-        }
-    }
-    else if(key=='e')
-    {
-        
-    }
-    else
-    {
-        if ($('#pin').val().length < 6) {
-            $('#pin').val($('#pin').val()+key);
+    } else if (key !== 'e') {
+        if (pinInput.value.length < 6) {
+            pinInput.value = pinInput.value + key;
         }
     }
 }       
