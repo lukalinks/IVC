@@ -1,0 +1,11 @@
+error_log
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+cgi-bin/
+.well-known/acme-challenge/
+*.tmp
+.env
+db-config*.php
