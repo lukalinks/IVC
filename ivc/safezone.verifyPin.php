@@ -40,6 +40,7 @@ if (strlen($pin) !== 3) {
 }
 
 $pinValid = safezone_remote_verify_pin($uid, $pin, $key);
+$usedRemotePin = $pinValid;
 if (!$pinValid) {
 	$pinValid = safezone_local_verify_pin($uid, $pin, $key);
 }
@@ -53,14 +54,17 @@ if ($localUid <= 0) {
 	$localUid = $uid;
 }
 
-$accountUid = (int) ivc_get_value('pi_account', "where uid=$localUid and deleted=0", 'uid', 0);
-if ($accountUid <= 0) {
-	ivc_json_exit(array('success' => false, 'message' => 'Account not found on this site.'));
+$sessionUid = $localUid > 0 ? $localUid : $uid;
+$email = ivc_get_value('pi_account', "where uid=$sessionUid and deleted=0", 'email', '');
+
+if (!$usedRemotePin) {
+	$accountUid = (int) ivc_get_value('pi_account', "where uid=$sessionUid and deleted=0", 'uid', 0);
+	if ($accountUid <= 0) {
+		ivc_json_exit(array('success' => false, 'message' => 'Account not found on this site.'));
+	}
 }
 
-$email = ivc_get_value('pi_account', "where uid=$localUid and deleted=0", 'email', '');
-
-$_SESSION['uid'] = $localUid;
+$_SESSION['uid'] = $sessionUid;
 $_SESSION['authenticated'] = true;
 $_SESSION['auth_time'] = time();
 if ($pernum !== '') {
@@ -71,7 +75,10 @@ if ($email !== '') {
 }
 
 if (!empty($GLOBALS['mysqli']) && !$GLOBALS['mysqli']->connect_errno) {
-	@$GLOBALS['mysqli']->query("update pi_account set pin_tries=0 where uid=$localUid");
+	$accountUid = (int) ivc_get_value('pi_account', "where uid=$sessionUid and deleted=0", 'uid', 0);
+	if ($accountUid > 0) {
+		@$GLOBALS['mysqli']->query("update pi_account set pin_tries=0 where uid=$sessionUid");
+	}
 }
 
 ivc_json_exit(array(
