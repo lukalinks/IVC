@@ -39,9 +39,11 @@ if($_POST){
     {
         $qry="INSERT INTO `ivc_bookings` (`uid`, `resort`, `no_of_guests`, `arrival_date`, `no_of_nights`, `accomodation`, `restaurant`, `date`, email, status) VALUES ('$uid', '$resort', '$no_of_guests', '$arrival_date', '$no_of_nights', '$accomodation', '$restaurant', NOW(), '$email', 'pending')";
 
-        $GLOBALS ['mysqli']->query ($qry) or die ($GLOBALS ['mysqli']->error . __LINE__);
-
-        $msg="Your Booking Request has been sent successfully!";
+        if (!$GLOBALS ['mysqli']->query ($qry)) {
+            $err = 'Unable to save your booking right now. Please try again or contact support.';
+        } else {
+            $msg="Your Booking Request has been sent successfully!";
+        }
 
     }
     }

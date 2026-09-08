@@ -81,6 +81,36 @@ function ivc_ensure_admin_schema()
       PRIMARY KEY (`k`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+    $db->query("CREATE TABLE IF NOT EXISTS `pernum` (
+      `pernum` varchar(32) NOT NULL,
+      `uid` int(11) NOT NULL,
+      PRIMARY KEY (`pernum`),
+      KEY `uid` (`uid`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+
+    $db->query("CREATE TABLE IF NOT EXISTS `banned_users` (
+      `uid` int(11) NOT NULL,
+      PRIMARY KEY (`uid`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+
+    $db->query("CREATE TABLE IF NOT EXISTS `ivc_bookings` (
+      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `uid` int(10) unsigned NOT NULL,
+      `resort` varchar(128) NOT NULL DEFAULT '',
+      `no_of_guests` tinyint(3) unsigned NOT NULL DEFAULT 1,
+      `arrival_date` date NOT NULL,
+      `no_of_nights` tinyint(3) unsigned NOT NULL DEFAULT 1,
+      `accomodation` varchar(64) NOT NULL DEFAULT '',
+      `restaurant` varchar(64) NOT NULL DEFAULT '',
+      `date` datetime NOT NULL,
+      `email` varchar(255) NOT NULL DEFAULT '',
+      `status` varchar(24) NOT NULL DEFAULT 'pending',
+      `admin_notes` text DEFAULT NULL,
+      `updated_at` datetime DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `uid` (`uid`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
     if (ivc_table_exists('ivc_bookings') && !ivc_column_exists('ivc_bookings', 'status')) {
         $db->query("ALTER TABLE `ivc_bookings` ADD COLUMN `status` varchar(24) NOT NULL DEFAULT 'pending'");
     }
