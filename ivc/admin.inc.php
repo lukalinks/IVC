@@ -11,10 +11,18 @@ function ivc_mysqli()
 
 function ivc_table_exists($table)
 {
-    $db = $GLOBALS['mysqli']->real_escape_string($GLOBALS['mysqli']->query('SELECT DATABASE()')->fetch_row()[0]);
-    $table = $GLOBALS['mysqli']->real_escape_string($table);
-    $res = $GLOBALS['mysqli']->query("SHOW TABLES FROM `$db` LIKE '$table'");
-    return $res && $res->num_rows > 0;
+	$dbRes = $GLOBALS['mysqli']->query('SELECT DATABASE()');
+	if (!$dbRes) {
+		return false;
+	}
+	$dbRow = $dbRes->fetch_row();
+	if (!$dbRow || !isset($dbRow[0]) || $dbRow[0] === '') {
+		return false;
+	}
+	$db = $GLOBALS['mysqli']->real_escape_string($dbRow[0]);
+	$table = $GLOBALS['mysqli']->real_escape_string($table);
+	$res = $GLOBALS['mysqli']->query("SHOW TABLES FROM `$db` LIKE '$table'");
+	return $res && $res->num_rows > 0;
 }
 
 function ivc_column_exists($table, $column)
