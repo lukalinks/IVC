@@ -7,7 +7,20 @@
 -- Local XAMPP example:
 --   C:\xampp\mysql\bin\mysql.exe -u root bank_dingo < ivc\schema.sql
 --
--- Requires existing SafeZone tables: pi_account, pernum (geo_countries optional).
+-- Requires existing SafeZone tables: pi_account (member accounts), pernum (account numbers).
+-- If pi_account already exists on your server, only the pernum/banned_users blocks below are needed.
+
+CREATE TABLE IF NOT EXISTS `pernum` (
+  `pernum` varchar(32) NOT NULL,
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`pernum`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS `banned_users` (
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ---------------------------------------------------------------------------
 -- Core IVC application tables
@@ -234,7 +247,11 @@ DEALLOCATE PREPARE stmt;
 
 INSERT IGNORE INTO `pernum` (`pernum`, `uid`)
 SELECT LPAD(CAST(uid AS UNSIGNED) + 1000000000, 10, '0'), uid
-FROM `pi_account`;
+FROM `pi_account`
+WHERE EXISTS (
+  SELECT 1 FROM information_schema.TABLES
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'pi_account'
+);
 
 SET @bookings_exists := (
   SELECT COUNT(*) FROM information_schema.TABLES

@@ -28,25 +28,25 @@ function getNumbersFromText($inp){
 function getTotRecords($field,$table,$where)
 	{
 		$select = "SELECT ".$field." FROM `".$table."` ".$where;
-		$rows = $GLOBALS ['mysqli']->query ($select) or die ($GLOBALS ['mysqli']->error . __LINE__);
+		$rows = @$GLOBALS ['mysqli']->query ($select);
+		if (!$rows) {
+			return 0;
+		}
 		return $rows->num_rows;
 	}
 	
 function getSingleValue($table,$where,$field)
 {
-	$select = "SELECT ".$field." FROM `".$table."` ".$where;
-	//print $select.'<br>';
-	$res = $GLOBALS ['mysqli']->query ($select) or die ($GLOBALS ['mysqli']->error . __LINE__);
-	if ($res->num_rows > 0)
-	{
-		$row = $res->fetch_assoc ();
-		//print $row[$field].'<br>';
-		return $row[$field];
-	}
-	else
-	{
+	if (empty($GLOBALS['mysqli']) || $GLOBALS['mysqli']->connect_errno) {
 		return '';
 	}
+	$select = "SELECT ".$field." FROM `".$table."` ".$where;
+	$res = @$GLOBALS['mysqli']->query($select);
+	if (!$res || $res->num_rows === 0) {
+		return '';
+	}
+	$row = $res->fetch_assoc();
+	return isset($row[$field]) ? $row[$field] : '';
 	
 }	
 
@@ -276,13 +276,13 @@ function ivc_resolve_login_uid($pernumRaw)
 	$pernum = (int) $digits;
 	$pernum2 = str_pad($digits, 10, '0', STR_PAD_LEFT);
 
-	$uid = (int) getSingleValue('pernum', "where pernum='$pernum2'", 'uid');
+	$uid = (int) ivc_get_value('pernum', "where pernum='$pernum2'", 'uid', 0);
 	if ($uid > 0) {
 		return $uid;
 	}
 
 	if ($pernum > 0 && $pernum < 1000000000) {
-		$uid = (int) getSingleValue('pi_account', "where uid=$pernum and deleted=0", 'uid');
+		$uid = (int) ivc_get_value('pi_account', "where uid=$pernum and deleted=0", 'uid', 0);
 		if ($uid > 0) {
 		 return $uid;
 		}
@@ -291,10 +291,11 @@ function ivc_resolve_login_uid($pernumRaw)
 	if ($pernum > 1000000000) {
 		$uid = $pernum - 1000000000;
 		if ($uid > 0) {
-			$found = (int) getSingleValue('pi_account', "where uid=$uid and deleted=0", 'uid');
+			$found = (int) ivc_get_value('pi_account', "where uid=$uid and deleted=0", 'uid', 0);
 			if ($found > 0) {
 				return $found;
 			}
+			return $uid;
 		}
 	}
 
@@ -344,7 +345,7 @@ function ivc_password_matches($uid, $plain)
 	if ($uid <= 0 || $plain === '') {
 		return false;
 	}
-	$stored = getSingleValue('pi_account', "where uid=$uid", 'password');
+	$stored = ivc_get_value('pi_account', "where uid=$uid", 'password', '');
 	if ($stored === '' || $stored === null) {
 		return false;
 	}

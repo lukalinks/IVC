@@ -216,7 +216,11 @@ function startLogin()
             try {
                 result = JSON.parse(text);
             } catch (e) {
-                throw new Error('Login service returned an invalid response. The server may need a PHP update (8.0+).');
+                var hint = (text || '').trim();
+                if (hint && hint.charAt(0) !== '<') {
+                    throw new Error(hint.substring(0, 220));
+                }
+                throw new Error('Login service returned an invalid response. Please try again in a moment.');
             }
             return result;
         });
