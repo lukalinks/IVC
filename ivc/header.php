@@ -5,10 +5,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IVC</title>
-<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+<?php
+if (!function_exists('ivc_asset')) {
+	require_once __DIR__ . '/functions.php';
+}
+$ivcBase = ivc_web_base();
+?>
+<link rel="stylesheet" href="<?= htmlspecialchars($ivcBase, ENT_QUOTES, 'UTF-8') ?>/assets/bootstrap/css/bootstrap.min.css">
 
-<script src="assets/js/jquery.min.js"></script>
-<script src="../js/bootstrap.bundle.min.js"></script>
+<script src="<?= htmlspecialchars($ivcBase, ENT_QUOTES, 'UTF-8') ?>/assets/js/jquery-3.5.1.min.js"></script>
+<script src="<?= htmlspecialchars($ivcBase, ENT_QUOTES, 'UTF-8') ?>/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 
 

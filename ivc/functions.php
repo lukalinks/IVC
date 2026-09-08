@@ -301,6 +301,42 @@ function ivc_resolve_login_uid($pernumRaw)
 	return 0;
 }
 
+function ivc_web_base()
+{
+	static $base = null;
+	if ($base !== null) {
+		return $base;
+	}
+
+	$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+	if (preg_match('#^(.*)/ivc(/.*)?$#', $scriptDir, $matches)) {
+		$base = rtrim($matches[1], '/') . '/ivc';
+	} else {
+		$base = rtrim($scriptDir, '/');
+		if (substr($base, -6) === '/admin') {
+			$base = dirname($base);
+		}
+	}
+
+	if ($base === '' || $base === '.') {
+		$base = '/ivc';
+	}
+
+	return $base;
+}
+
+function ivc_asset($relative)
+{
+	$relative = ltrim(str_replace('\\', '/', (string) $relative), '/');
+	return ivc_web_base() . '/assets/' . $relative;
+}
+
+function ivc_url($relative)
+{
+	$relative = ltrim(str_replace('\\', '/', (string) $relative), '/');
+	return ivc_web_base() . '/' . $relative;
+}
+
 function ivc_password_matches($uid, $plain)
 {
 	$uid = (int) $uid;

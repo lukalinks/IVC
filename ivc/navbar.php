@@ -1,8 +1,12 @@
 <?php
+if (!function_exists('ivc_asset')) {
+    require_once __DIR__ . '/functions.php';
+}
 $homeUrl = empty($_SESSION['uid']) ? '../index.php' : 'home.php';
+$logoUrl = ivc_asset('img/Picture7.png');
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar" style="width:100%; max-width:1920px;">
-    <a class="navbar-brand" href="<?= htmlspecialchars($homeUrl) ?>"><img src="assets/img/Picture7.png" class="img img-responsive" alt="IVC Home" style="max-height:50px;"></a>
+    <a class="navbar-brand" href="<?= htmlspecialchars($homeUrl) ?>"><img src="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>" class="img img-responsive" alt="IVC Home" style="max-height:50px;"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>

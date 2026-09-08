@@ -11,15 +11,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>International Vacation Club</title>
+<?php
+if (!isset($base)) {
+    $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+    if ($base === '.' || $base === '/') {
+        $base = '';
+    }
+}
+?>
+<link rel="stylesheet" href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/css/bootstrap.min.css">
 
-<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/ivc/css/webticker.css">
 
-<link rel="stylesheet" href="ivc/css/webticker.css">
+<script src="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/js/jquery-3.5.1.min.js"></script>
+<script src="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/js/bootstrap.bundle.min.js"></script>
 
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-
-<script src="ivc/js/jquery.webticker.min.js"></script>
+<script src="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/ivc/js/jquery.webticker.min.js"></script>
 
 
 

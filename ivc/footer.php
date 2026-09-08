@@ -3,7 +3,12 @@
 		<div class="row" style="padding: 20px; margin-top: 15px;">
 
 			<div class="col-md-12" style="text-align: center;">
-				<img src="protected_small.png" class="img img-responsive" style="margin: 0 auto; width:180px;">
+				<?php
+				if (!function_exists('ivc_url')) {
+					require_once __DIR__ . '/functions.php';
+				}
+				?>
+				<img src="<?= htmlspecialchars(ivc_url('protected_small.png'), ENT_QUOTES, 'UTF-8') ?>" class="img img-responsive" style="margin: 0 auto; width:180px;">
 				
 				<p style="color: #000; text-align: center; font-size: 14px; font-weight: normal; margin-top:20px;">© 2018-<?=date('Y')?> International Vacation Club Ltd.<br>All Rights Reserved.</p>
 			</div>
