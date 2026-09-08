@@ -302,6 +302,28 @@ function ivc_resolve_login_uid($pernumRaw)
 	return 0;
 }
 
+function ivc_session_pernum()
+{
+	if (!empty($_SESSION['pernum'])) {
+		return preg_replace('/\D/', '', (string) $_SESSION['pernum']);
+	}
+	if (empty($_SESSION['uid'])) {
+		return '';
+	}
+	$uid = (int) $_SESSION['uid'];
+	if ($uid <= 0) {
+		return '';
+	}
+	if (function_exists('ivc_account_number')) {
+		return ivc_account_number($uid);
+	}
+	$fromDb = ivc_get_value('pernum', "where uid=$uid", 'pernum', '');
+	if ($fromDb !== '') {
+		return preg_replace('/\D/', '', (string) $fromDb);
+	}
+	return str_pad((string) ($uid + 1000000000), 10, '0', STR_PAD_LEFT);
+}
+
 function ivc_web_base()
 {
 	static $base = null;

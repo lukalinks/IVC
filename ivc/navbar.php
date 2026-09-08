@@ -28,6 +28,10 @@ $logoUrl = ivc_asset('img/Picture7.png');
         }
         else
         {
+            $memberPernum = ivc_session_pernum();
+            if ($memberPernum !== '') {
+                echo '<span class="nav-item navbar-text mr-lg-3" style="color:#650B14; font-weight:bold;">Account # ' . htmlspecialchars($memberPernum, ENT_QUOTES, 'UTF-8') . '</span>';
+            }
             if (function_exists('ivc_is_admin') && ivc_is_admin($_SESSION['uid'])) {
                 echo '<a class="nav-item nav-link" href="admin/index.php">Admin</a>';
             }

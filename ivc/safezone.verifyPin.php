@@ -69,6 +69,10 @@ $_SESSION['authenticated'] = true;
 $_SESSION['auth_time'] = time();
 if ($pernum !== '') {
 	$_SESSION['pernum'] = $pernum;
+} elseif ($sessionUid > 0 && function_exists('ivc_account_number')) {
+	$_SESSION['pernum'] = ivc_account_number($sessionUid);
+} elseif ($sessionUid > 0) {
+	$_SESSION['pernum'] = str_pad((string) ($sessionUid + 1000000000), 10, '0', STR_PAD_LEFT);
 }
 if ($email !== '') {
 	$_SESSION['email'] = $email;
