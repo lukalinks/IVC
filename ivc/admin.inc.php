@@ -111,6 +111,25 @@ function ivc_ensure_admin_schema()
       KEY `uid` (`uid`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+    $db->query("CREATE TABLE IF NOT EXISTS `ivc_listings` (
+      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `uid` int(10) unsigned NOT NULL DEFAULT 0,
+      `business_type` varchar(32) NOT NULL DEFAULT 'other',
+      `name` varchar(190) NOT NULL DEFAULT '',
+      `description` text,
+      `country` varchar(100) NOT NULL DEFAULT '',
+      `city` varchar(100) NOT NULL DEFAULT '',
+      `address` varchar(255) NOT NULL DEFAULT '',
+      `phone` varchar(50) NOT NULL DEFAULT '',
+      `email` varchar(190) NOT NULL DEFAULT '',
+      `website` varchar(255) NOT NULL DEFAULT '',
+      `status` varchar(16) NOT NULL DEFAULT 'pending',
+      `created_at` datetime NOT NULL,
+      PRIMARY KEY (`id`),
+      KEY `status` (`status`),
+      KEY `business_type` (`business_type`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
     if (ivc_table_exists('ivc_bookings') && !ivc_column_exists('ivc_bookings', 'status')) {
         $db->query("ALTER TABLE `ivc_bookings` ADD COLUMN `status` varchar(24) NOT NULL DEFAULT 'pending'");
     }
@@ -136,6 +155,13 @@ function ivc_ensure_admin_schema()
         $db->query("INSERT INTO `ivc_resorts` (`name`, `code`, `location`, `description`, `image`, `status`, `sort_order`, `created_at`) VALUES
             ('LAGUNA PALACE', 'LAGUNA PALACE', 'Zanzibar, Tanzania', 'Laguna Palace Resort', 'laguna.png', 'active', 1, NOW()),
             ('GATOR''S HIDEAWAY', 'GATOR''S HIDEAWAY', 'Uganda', 'Gator''s Hideaway', 'gator.png', 'active', 2, NOW())");
+    }
+
+    $listingCheck = $db->query("SELECT id FROM ivc_listings LIMIT 1");
+    if ($listingCheck && $listingCheck->num_rows === 0) {
+        $db->query("INSERT INTO `ivc_listings` (`uid`, `business_type`, `name`, `description`, `country`, `city`, `address`, `phone`, `email`, `website`, `status`, `created_at`) VALUES
+            (0, 'resort', 'Laguna Palace Resort', 'IVC partner resort in Zanzibar.', 'Tanzania', 'Zanzibar', '', '', '', '', 'approved', NOW()),
+            (0, 'resort', 'Gator''s Hideaway', 'IVC partner resort in Uganda.', 'Uganda', '', '', '', '', '', 'approved', NOW())");
     }
 
     $hasProdAdmin = false;
@@ -187,13 +213,14 @@ function ivc_setting($key, $default = '')
     }
     $stmt->bind_param('s', $key);
     $stmt->execute();
-    $res = $stmt->get_result();
-    $row = $res ? $res->fetch_assoc() : null;
-    $stmt->close();
-    if (!$row) {
+    $value = null;
+    $stmt->bind_result($value);
+    if (!$stmt->fetch()) {
+        $stmt->close();
         return $default;
     }
-    return $row['v'];
+    $stmt->close();
+    return $value !== null ? (string) $value : $default;
 }
 
 function ivc_set_setting($key, $value)

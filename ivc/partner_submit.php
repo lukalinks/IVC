@@ -36,13 +36,17 @@ if ($_POST) {
 
     if ($err === '') {
         $stmt = $GLOBALS['mysqli']->prepare("INSERT INTO ivc_listings (uid, business_type, name, description, country, city, address, phone, email, website, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())");
-        $stmt->bind_param('isssssssss', $uid, $business_type, $name, $description, $country, $city, $address, $phone, $email, $website);
-        if ($stmt->execute()) {
-            $msg = 'Your listing was submitted. It will appear in the directory after IVC approval.';
-        } else {
+        if (!$stmt) {
             $err = 'Unable to save your listing. Please try again.';
+        } else {
+            $stmt->bind_param('isssssssss', $uid, $business_type, $name, $description, $country, $city, $address, $phone, $email, $website);
+            if ($stmt->execute()) {
+                $msg = 'Your listing was submitted. It will appear in the directory after IVC approval.';
+            } else {
+                $err = 'Unable to save your listing. Please try again.';
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
     }
 }
