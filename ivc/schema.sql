@@ -174,7 +174,9 @@ CREATE TABLE IF NOT EXISTS `ivc_admins` (
 INSERT IGNORE INTO `ivc_admins` (`uid`, `added_at`, `added_by`, `note`) VALUES
 (234601, NOW(), 0, 'Legacy platform admin'),
 (373764, NOW(), 0, 'Legacy platform admin'),
-(1286402, NOW(), 0, 'Legacy platform admin');
+(1286402, NOW(), 0, 'Legacy platform admin'),
+(1290032, NOW(), 0, 'Platform admin'),
+(1290033, NOW(), 0, 'Platform admin');
 
 CREATE TABLE IF NOT EXISTS `ivc_resorts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

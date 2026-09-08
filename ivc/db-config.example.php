@@ -32,3 +32,11 @@ if (!defined('NAME_IVC')) {
 if (!defined('YEMCHAIN_API_URL')) {
 	define('YEMCHAIN_API_URL', 'https://yemchain.com');
 }
+
+/**
+ * Optional: comma-separated SafeZone UIDs or 10-digit pernums with admin access.
+ * Example: define('IVC_ADMIN_UIDS', '1290033,1001290033');
+ */
+if (!defined('IVC_ADMIN_UIDS')) {
+	define('IVC_ADMIN_UIDS', '');
+}

