@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 include("config.php");
 include("functions.php");
@@ -220,6 +220,6 @@ function changeOptions(){
     
 }
 </script>				
-<?
+<?php
 include('footer.php');
 ?>

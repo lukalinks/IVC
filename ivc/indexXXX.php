@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 
 include("config.php");
@@ -311,7 +311,7 @@ object-fit: contain;
 			</div>
 		</div>	
 
-		<?
+		<?php
     include('navbar.php');
     ?>
     <div class="row">

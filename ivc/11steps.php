@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if ($_SESSION['uid'] <= 0) {
     header("Location: index.php");
@@ -30,6 +30,6 @@ var navbar = document.getElementById("navbar");
 
 navbar.classList.add("sticky");
 </script>
-<?
+<?php
 include('footer.php');
 ?>

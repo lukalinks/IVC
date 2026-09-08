@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if ($_SESSION['uid'] <= 0) {
     header("Location: index.php");
@@ -73,14 +73,14 @@ if ($res->num_rows > 0)
             </div>
         
             
-                <?
+                <?php
                 if($currency=='YEM')
                 {    
                     ?>
                     <p style="width: 300px; margin: 0 auto; height: auto; border: 1px solid #000; text-align: center; font-size: 26px; background: rgba(255, 255, 255, 0.7); margin-top:20px;">
                     Membership Paid Successfully.
                     </p>
-                    <?
+                    <?php
                 }
                 else
                 {
@@ -98,7 +98,7 @@ if ($res->num_rows > 0)
                         <p style="text-align:center; margin:0 auto;"><button class="btn btn-lg greenbtn paybuttons btn-success" type="submit" style="margin-top:20px; display:none;">PAY WITH PAYPAL</button></p>
                         <p style="text-align:center; margin:0 auto;"><button class="btn btn-lg greenbtn paybuttons btn-success" type="button" style="margin-top:20px; margin-bottom:20px; display:none;" onClick="$('#bankinfo').show();">BANK WIRE</button></p>
                     </form>
-                    <?
+                    <?php
                     }
                     if($currency=='BTC')
                     {
@@ -107,7 +107,7 @@ if ($res->num_rows > 0)
                     <button class="btn btn-lg greenbtn paybuttons" type="button" style="margin-top:20px; margin-bottom:20px;" onClick="generate_btc(<?=$_GET['ref']?>);">PAY WITH BTC</button>
                     <p id="btc" style="width: 300px; padding-top:20px; padding-bottom:20px; margin: 0 auto; height: auto; border: 1px solid #000; text-align: center; font-size: 16px; margin-bottom:20px; display:none;"></p>
                     
-                    <?
+                    <?php
                     }
                     
 
@@ -115,14 +115,14 @@ if ($res->num_rows > 0)
                 ?>
                 
                 <div id="bankinfo" style="display:none; background: rgba(255, 255, 255, 0.7); max-width:300px; margin:0 auto;">
-                <?
+                <?php
                 if($currency!='BTC')
                 {
                 ?>
                 <p style="width: 300px; margin: 0 auto; height: auto; border: 1px solid #000; text-align: center; font-size: 26px;">
                 Make your payment to
                 </p>
-                <?
+                <?php
                 }
                 if($currency=='USD')
                 {    
@@ -145,11 +145,11 @@ if ($res->num_rows > 0)
                     New York, NY<br>
                     10010, USA
                 </p>
-                <?
+                <?php
                 }
                 ?>
 
-<?
+<?php
                 if($currency=='EUR' || $currency=='CHF')
                 {    
                 ?>
@@ -168,11 +168,11 @@ if ($res->num_rows > 0)
                     80687 München<br>
                     Germany
                 </p>
-                <?
+                <?php
                 }
                 ?>
 
-<?
+<?php
                 if($currency=='GBP')
                 {    
                 ?>
@@ -196,11 +196,11 @@ if ($res->num_rows > 0)
                     E1 6JJ<br>
                     United Kingdom
                 </p>
-                <?
+                <?php
                 }
                 ?>
 
-<?
+<?php
                 if($currency=='AUD')
                 {    
                 ?>
@@ -220,11 +220,11 @@ if ($res->num_rows > 0)
                     Collingwood VIC 3066<br> 
                     Australia
                 </p>
-                <?
+                <?php
                 }
                 ?>
 
-<?
+<?php
                 if($currency=='NZD')
                 {    
                 ?>
@@ -244,7 +244,7 @@ if ($res->num_rows > 0)
                     E1 6JJ<br>
                     United Kingdom
                 </p>
-                <?
+                <?php
                 }
                 ?>
                 </div>
@@ -269,7 +269,7 @@ var navbar = document.getElementById("navbar");
 navbar.classList.add("sticky");
 </script>    
 				
-<?
+<?php
     }
 }
 else

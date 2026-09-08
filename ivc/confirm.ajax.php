@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if ($_SESSION['uid'] <= 0) {
     print "err||Please login first.";

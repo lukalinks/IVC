@@ -117,7 +117,7 @@ if (!isset($_POST["txn_id"]) && !isset($_POST["txn_type"])){
             document.getElementById('frm').submit();
         </script>    
 
-        <?
+        <?php
         //print "https://www.paypal.com/cgi-bin/webscr".$querystring;
         exit;
 		

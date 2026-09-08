@@ -14,13 +14,13 @@ $homeUrl = empty($_SESSION['uid']) ? '../index.php' : 'home.php';
         <a class="nav-item nav-link" href="benefits.php">Benefits</a>
         <a class="nav-item nav-link" href="membership.php">Memberships</a>
         <a class="nav-item nav-link" href="#">V.I.P Luxury</a>-->
-        <?
+        <?php
         if(empty($_SESSION['uid']))
         {
         ?>
             <a class="nav-item nav-link" href="login.php?role=partner">Partner Login</a>
             <a class="nav-item nav-link" href="login.php">Login</a>
-        <?
+        <?php
         }
         else
         {
@@ -29,7 +29,7 @@ $homeUrl = empty($_SESSION['uid']) ? '../index.php' : 'home.php';
             }
         ?>
             <a class="nav-item nav-link" href="logout.php">Logout</a>
-        <?
+        <?php
         }
         ?>    
     </div>

@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if ($_SESSION['uid'] <= 0) {
     header("Location: index.php");
@@ -52,19 +52,19 @@ if ($res->num_rows > 0)
         </p>
         
         <p style="font-weight:bold;"><?=$title4?></p>
-        <?
+        <?php
         if($totreserved>=$total_seats)
         {
         ?>
         <p><a href="vacation_details.php?id=<?=$id?>"><button type="button" class="btn btn-danger">CLOSED</button></a></p>
-        <?
+        <?php
         }
         else 
         {
           
         ?>
         <p><a href="vacation_details.php?id=<?=$id?>"><button type="button" class="btn btn-success">AVAILABLE</button></a></p>
-        <?
+        <?php
         }
         ?>
         <p><a href="vacation_details.php?id=<?=$id?>"><button type="button" class="btn btn-primary">MORE INFO</button></a></p>
@@ -85,7 +85,7 @@ var navbar = document.getElementById("navbar");
 
 navbar.classList.add("sticky");
 </script>
-<?
+<?php
     }
   }
 include('footer.php');

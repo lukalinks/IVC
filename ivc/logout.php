@@ -1,4 +1,4 @@
-<?
+<?php
 ini_set('session.cookie_domain', '.ivc.travel');
 session_set_cookie_params(0, '/', '.ivc.travel');
 session_start();

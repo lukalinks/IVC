@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if ($_SESSION['uid'] <= 0) {
     header("Location: index.php");
@@ -25,7 +25,7 @@ $levels = array("3" => '3***', "4" => '4****', "5" => '5*****', "vip" => 'VIP LU
 			</div>
     </div>
 
-    <?
+    <?php
     if ($res->num_rows > 0)
     {
         $row = $res->fetch_assoc ();
@@ -43,19 +43,19 @@ $levels = array("3" => '3***', "4" => '4****', "5" => '5*****', "vip" => 'VIP LU
            ?>
             <div class="alert alert-danger" role="alert" style="max-width:1000px; margin:0 auto;">
             Membership Level: <?=$levels[$row['membership']]?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Category: <?=strtoupper($row['category'])?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status: <a href="membership_status.php">EXPIRED</a>
-            <?
+            <?php
             if($_SESSION['uid']>0 && $row['currency']=='YEM')
             {
             ?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AUTO RENEW: 
             <div class="form-check-inline">
                 <label class="form-check-label">
-                    <input type="radio" value='1' class="form-check-input" name="renew" <? if($row['auto_renew']=='1') { print 'checked'; } ?>>YES
+                    <input type="radio" value='1' class="form-check-input" name="renew" <?php if($row['auto_renew']=='1') { print 'checked'; } ?>>YES
                 </label>
             </div>
             <div class="form-check-inline">
                 <label class="form-check-label">
-                    <input type="radio" value='0' class="form-check-input" name="renew" <? if($row['auto_renew']=='0') { print 'checked'; } ?>>NO
+                    <input type="radio" value='0' class="form-check-input" name="renew" <?php if($row['auto_renew']=='0') { print 'checked'; } ?>>NO
                 </label>
             </div>
             <script>
@@ -83,11 +83,11 @@ $levels = array("3" => '3***', "4" => '4****', "5" => '5*****', "vip" => 'VIP LU
                     });
                 });
             </script>
-            <?
+            <?php
             }
             ?>    
             </div>
-           <?
+           <?php
 
         }
         else
@@ -95,19 +95,19 @@ $levels = array("3" => '3***', "4" => '4****', "5" => '5*****', "vip" => 'VIP LU
             ?>
             <div class="alert alert-primary" role="alert" style="max-width:1000px; margin:0 auto;">
             Membership Level: <?=$levels[$row['membership']]?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Category: <?=strtoupper($row['category'])?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status: <a href="membership_status.php">ACTIVE</a>
-            <?
+            <?php
             if($_SESSION['uid']>0 && $row['currency']=='YEM')
             {
             ?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AUTO RENEW: 
             <div class="form-check-inline">
                 <label class="form-check-label">
-                    <input type="radio" value='1' class="form-check-input" name="renew" <? if($row['auto_renew']=='1') { print 'checked'; } ?>>YES
+                    <input type="radio" value='1' class="form-check-input" name="renew" <?php if($row['auto_renew']=='1') { print 'checked'; } ?>>YES
                 </label>
             </div>
             <div class="form-check-inline">
                 <label class="form-check-label">
-                    <input type="radio" value='0' class="form-check-input" name="renew" <? if($row['auto_renew']=='0') { print 'checked'; } ?>>NO
+                    <input type="radio" value='0' class="form-check-input" name="renew" <?php if($row['auto_renew']=='0') { print 'checked'; } ?>>NO
                 </label>
             </div>
             <script>
@@ -135,15 +135,15 @@ $levels = array("3" => '3***', "4" => '4****', "5" => '5*****', "vip" => 'VIP LU
                     });
                 });
             </script>
-            <?
+            <?php
             }
             ?>    
             </div>
-           <?
+           <?php
         }
         ?>
 
-        <?
+        <?php
     }
     ?>
     <div class="row" style="margin:0 auto; max-width:1000px;  margin-top:5px; padding:15px; border: 1px #650B14 solid; min-height:500px; color:#650B14;">
@@ -309,7 +309,7 @@ Membership fees can be paid in YEM (at the current rate) as well with a 10% disc
       
       
     </div>  
-<?
+<?php
 
 $json = file_get_contents('https://cryptorank.online/rankdata_with_price.php?apikey=tkfNseYgYsEE32n4uvxb');
 $jsonIterator = json_decode($json, TRUE);
@@ -506,6 +506,6 @@ var navbar = document.getElementById("navbar");
 
 navbar.classList.add("sticky");
 </script>
-<?
+<?php
 include('footer.php');
 ?>

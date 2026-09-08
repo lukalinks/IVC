@@ -12,28 +12,14 @@
 
 <title>International Vacation Club</title>
 
-<link rel="stylesheet" href="https://safe.zone/cdn/css/bootstrap.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="css/bootstrap.min.css">
 
-<link rel="stylesheet" href="https://safe.zone/cdn/css/webticker.css" crossorigin="anonymous">
+<link rel="stylesheet" href="ivc/css/webticker.css">
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery-3.5.1.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
 
-<!--<script
-
-	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-
-<!--<script src="assets/bootstrap/js/bootstrap.min.js"></script>-->
-
-<script src="https://safe.zone/cdn/js/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-
-<script src="https://safe.zone/cdn/js/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
-<script src="https://safe.zone/cdn/js/bootstrap.min.js" crossorigin="anonymous"></script>
-
-
-<script src="jquery.webticker.min.js" crossorigin="anonymous"></script>
+<script src="ivc/js/jquery.webticker.min.js"></script>
 
 
 

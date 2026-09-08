@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if ($_SESSION['uid'] <= 0) {
     header("Location: index.php");
@@ -39,7 +39,7 @@ $res = $GLOBALS ['mysqli']->query ($select) or die ($GLOBALS ['mysqli']->error .
                               <th style="text-align:center;">TARGET DATE</th>
                                                      
                           </tr>
-<?
+<?php
 if ($res->num_rows > 0)
 {
     while($row = $res->fetch_assoc ())
@@ -72,7 +72,7 @@ if ($res->num_rows > 0)
        
     
 				
-<?
+<?php
     }
 }
 else
@@ -98,6 +98,6 @@ var navbar = document.getElementById("navbar");
 
 navbar.classList.add("sticky");
 </script>      
-<?
+<?php
 include('footer.php');
 ?>

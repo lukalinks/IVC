@@ -339,7 +339,7 @@ ul{
 			</div>
 		</div>	
 
-		<?
+		<?php
     include('navbar.php');
     ?>
     

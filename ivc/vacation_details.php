@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if ($_SESSION['uid'] <= 0) {
     header("Location: index.php");
@@ -59,12 +59,12 @@ if ($res->num_rows > 0)
 
             <div class="row" style="color:#650B14; margin-top:15px;">
                 <div class="col-md-12">
-                    <?
+                    <?php
                     if($member_type=='vip')
                     {
                     ?>
                     <p style="font-weight:bold;">This luxury world adventure is only available for VIP Luxury Members.</p>
-                    <?
+                    <?php
                     }
                     ?>
                     <div>
@@ -80,7 +80,7 @@ if ($res->num_rows > 0)
                     <div class="alert alert-danger" role="alert" id="err" style="margin-top:10px; display:none;"></div>
                     <div class="alert alert-success" role="alert" id="suc" style="margin-top:10px; display:none;"></div>
                         
-                    <?
+                    <?php
                     $totreserved = getSingleValue('ivc_reservations',"where vid=$id",'sum(qty)');
                     if($totreserved<$total_seats)
                     {
@@ -110,13 +110,13 @@ if ($res->num_rows > 0)
                             
                         </tbody>
                     </table>	
-                    <?
+                    <?php
                     }
                     else 
                     {
                     ?>
                     <div class="alert alert-danger" role="alert" style="margin-top:10px; text-align:center;">CLOSED</div>
-                    <?    
+                    <?php    
                     }
                     ?>            
                     <p style="font-weight:bold; font-size: 1.5rem;">Route Schedule</p>
@@ -222,6 +222,6 @@ var navbar = document.getElementById("navbar");
 
 navbar.classList.add("sticky");
 </script>
-<?
+<?php
 include('footer.php');
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * ini_set('display_errors', 1);
  * ini_set('display_startup_errors', 1);
@@ -89,7 +89,7 @@ if($_POST)
     <script>
 		document.getElementById('frm').submit();
 	</script>
-    <?
+    <?php
 	exit;
 	}
 }
@@ -175,12 +175,12 @@ td {
 					
 					
 					<div class="col-md-12" style="text-align: center;">
-						<?
+						<?php
                                         if($err!='')
                                         {
                                         ?>
                                         <div class="alert alert-danger" style="margin-top:0px;" role="alert"><?=$err?></div>
-                                        <?
+                                        <?php
                                         }
                                         ?>
                                         <p class="pp" style="font-weight:normal; font-size:22px; color:#650B14; text-align:center; margin-top:20px;"><?php  echo "ENTER DIGITS";

@@ -1,4 +1,4 @@
-<?
+<?php
 include("config.php");
 include("functions.php");
 $isPartnerLogin = (isset($_GET['role']) && $_GET['role'] === 'partner');
@@ -350,6 +350,6 @@ function keypad(td, key)
 </script>          
                     
 				
-<?
+<?php
 include('footer.php');
 ?>

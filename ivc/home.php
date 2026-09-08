@@ -1,4 +1,4 @@
-<?
+<?php
 include("config.php");
 if (empty($_SESSION['uid'])) {
     header("Location: login.php");
@@ -55,6 +55,6 @@ if (navbar) {
     navbar.classList.add("sticky");
 }
 </script>				
-<?
+<?php
 include('footer.php');
 ?>
