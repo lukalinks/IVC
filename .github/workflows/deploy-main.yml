@@ -41,7 +41,7 @@ jobs:
           git config --global --add safe.directory /home/internationalvacationclub/public_html
 
           # Set Git remote to use SSH instead of HTTPS
-          git remote set-url origin git@github.com:sustecdev/gacs.git
+          git remote set-url origin git@github.com:sustecdev/IVC.git
 
           git fetch origin
           git reset --hard origin/main
