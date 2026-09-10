@@ -10,3 +10,4 @@ cgi-bin/
 .env
 db-config*.php
 !ivc/db-config.example.php
+!ivc/db-config.production.example.php
