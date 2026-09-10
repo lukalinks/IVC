@@ -10,6 +10,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([^/]+)/?$ index.php?pernum=$1 [L,QSA,B]
 
 RewriteRule ^\.htaccess$ - [F,L]
+RewriteRule ^\.git - [F,L]
 
 <FilesMatch "^\.env">
 	<IfModule mod_authz_core.c>
