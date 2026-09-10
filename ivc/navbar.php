@@ -14,6 +14,11 @@ $logoUrl = ivc_asset('img/Picture7.png');
     <div class="navbar-nav ml-auto">
         <a class="nav-item nav-link active" href="<?= htmlspecialchars($homeUrl) ?>">Home <span class="sr-only">(current)</span></a>
         <a class="nav-item nav-link" href="partners.php">Partners</a>
+        <?php if (!empty($_SESSION['uid'])): ?>
+        <a class="nav-item nav-link" href="partner_status.php">My Partner App</a>
+        <?php else: ?>
+        <a class="nav-item nav-link" href="login.php?role=partner">Partner Register</a>
+        <?php endif; ?>
         <!--<a class="nav-item nav-link" href="about.php">About</a>
         <a class="nav-item nav-link" href="benefits.php">Benefits</a>
         <a class="nav-item nav-link" href="membership.php">Memberships</a>

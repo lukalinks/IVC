@@ -45,9 +45,9 @@ include('header.php');
 <div class="row" style="max-width:1000px; margin:0 auto; border: 1px #650B14 solid; padding: 20px; margin-top: 100px;">
     <div class="col-md-12" style="text-align:center;">
         <h2 style="color:#650B14; margin-bottom:10px;">IVC Industry Partners</h2>
-        <p style="color:#650B14;">Hotels, resorts, travel agencies, car rentals, and tour services listed with IVC.</p>
+        <p style="color:#650B14;">Only admin-approved partners are shown here. Travel agents and industry businesses must register and be approved by IVC.</p>
         <p>
-            <a href="partner_submit.php" class="btn btn-primary" style="background:#018EF2; border-color:#018EF2;">LIST YOUR BUSINESS</a>
+            <a href="login.php?role=partner" class="btn btn-primary" style="background:#018EF2; border-color:#018EF2;">REGISTER AS PARTNER</a>
         </p>
         <p style="margin-top:15px;">
             <a class="btn btn-sm btn-outline-secondary filter-link" href="partners.php">All</a>

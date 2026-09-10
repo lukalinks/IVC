@@ -104,7 +104,13 @@ admin_layout_start($id ? 'Listing #' . $id : 'New listing', 'listings');
         <div><label>Email</label><input type="email" name="email" value="<?= admin_h($row['email']) ?>"></div>
         <div class="span-2"><label>Website</label><input type="text" name="website" value="<?= admin_h($row['website']) ?>"></div>
         <div class="span-2"><label>Description</label><textarea name="description" rows="5"><?= admin_h($row['description']) ?></textarea></div>
-        <div><button class="btn" type="submit">Save listing</button></div>
+        <div>
+            <button class="btn" type="submit">Save listing</button>
+            <?php if ($id > 0 && $row['status'] === 'pending'): ?>
+                <button class="btn btn-ok" type="submit" name="status" value="approved" formaction="listing.php?id=<?= (int) $id ?>">Approve partner</button>
+                <button class="btn btn-bad" type="submit" name="status" value="rejected" formaction="listing.php?id=<?= (int) $id ?>">Reject</button>
+            <?php endif; ?>
+        </div>
     </form>
     <?php if ($id > 0): ?>
     <form method="post" onsubmit="return confirm('Delete this listing?');" style="margin-top:12px;">

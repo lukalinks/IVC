@@ -78,6 +78,13 @@ if ($email !== '') {
 	$_SESSION['email'] = $email;
 }
 
+$loginRole = isset($input['login_role']) ? trim((string) $input['login_role']) : '';
+if ($loginRole === 'partner') {
+	$_SESSION['ivc_login_role'] = 'partner';
+} else {
+	unset($_SESSION['ivc_login_role']);
+}
+
 if (!empty($GLOBALS['mysqli']) && !$GLOBALS['mysqli']->connect_errno) {
 	$accountUid = (int) ivc_get_value('pi_account', "where uid=$sessionUid and deleted=0", 'uid', 0);
 	if ($accountUid > 0) {
@@ -85,7 +92,13 @@ if (!empty($GLOBALS['mysqli']) && !$GLOBALS['mysqli']->connect_errno) {
 	}
 }
 
+$redirect = 'home.php';
+if ($loginRole === 'partner') {
+	require_once __DIR__ . '/partners.inc.php';
+	$redirect = ivc_partner_redirect_for_uid($sessionUid);
+}
+
 ivc_json_exit(array(
 	'success' => true,
-	'redirect' => 'home.php',
+	'redirect' => $redirect,
 ));

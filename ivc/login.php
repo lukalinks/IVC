@@ -298,7 +298,8 @@ function login()
             uid: currentUid,
             pernum: currentPernum,
             pin: pin,
-            key: currentPinKey
+            key: currentPinKey,
+            login_role: <?= $isPartnerLogin ? "'partner'" : "''" ?>
         })
     })
     .then(function (response) {

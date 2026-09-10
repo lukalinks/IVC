@@ -31,7 +31,7 @@ $total = admin_count("SELECT COUNT(*) c FROM ivc_listings $where", $bind, $param
 list($page, $per, $offset, $pages) = admin_page($total, 25);
 $rows = admin_query("SELECT * FROM ivc_listings $where ORDER BY FIELD(status,'pending','approved','rejected'), id DESC LIMIT $per OFFSET $offset", $bind, $params) ?: array();
 
-admin_layout_start('Partners', 'listings');
+admin_layout_start('Partner applications', 'listings');
 $qs = array('status' => $status, 'type' => $type, 'q' => $q);
 ?>
 <div class="panel">

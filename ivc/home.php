@@ -5,7 +5,9 @@ if (empty($_SESSION['uid'])) {
     exit();
 }
 include('header.php');
+include('partners.inc.php');
 $siteNotice = function_exists('ivc_setting') ? trim((string) ivc_setting('site_notice')) : '';
+$partnerListing = ivc_user_latest_listing((int) $_SESSION['uid']);
 $homeResorts = function_exists('ivc_active_resorts') ? ivc_active_resorts() : array();
 if (!$homeResorts) {
     $homeResorts = array(
@@ -25,10 +27,15 @@ if (!$homeResorts) {
                         <p class="alert alert-warning"><?= htmlspecialchars($siteNotice) ?></p>
                         <?php endif; ?>
                         <div style="border: 1px solid #018EF2; padding: 16px; margin-bottom: 24px; background: #f4f9fd;">
-                            <p style="font-size: 22px; font-weight: bold; color: #018EF2; margin-bottom: 8px;">Partner Login</p>
-                            <p style="color:#650B14; margin-bottom: 16px;">Hotels, travel agencies, and industry partners: manage your listing or browse the partner directory.</p>
+                            <p style="font-size: 22px; font-weight: bold; color: #018EF2; margin-bottom: 8px;">Industry Partners</p>
+                            <p style="color:#650B14; margin-bottom: 16px;">Travel agents and travel businesses register with SafeZone, then IVC admin approves the application before it appears in the directory.</p>
+                            <?php if ($partnerListing): ?>
+                                <p class="alert alert-<?= strtolower($partnerListing['status']) === 'approved' ? 'success' : (strtolower($partnerListing['status']) === 'rejected' ? 'danger' : 'warning') ?>" style="margin-bottom:12px;">
+                                    Partner application: <strong><?= htmlspecialchars(ivc_partner_status_label($partnerListing['status'])) ?></strong>
+                                </p>
+                            <?php endif; ?>
                             <a href="partners.php" class="btn btn-primary" style="background:#018EF2; border-color:#018EF2; margin: 4px 8px;">PARTNER DIRECTORY</a>
-                            <a href="partner_submit.php" class="btn btn-primary" style="background:#650B14; border-color:#650B14; margin: 4px 8px;">LIST YOUR BUSINESS</a>
+                            <a href="<?= $partnerListing ? 'partner_status.php' : 'partner_submit.php' ?>" class="btn btn-primary" style="background:#650B14; border-color:#650B14; margin: 4px 8px;"><?= $partnerListing ? 'MY PARTNER APPLICATION' : 'REGISTER AS PARTNER' ?></a>
                         </div>
 						<div class="row">
                             <?php foreach ($homeResorts as $resort):

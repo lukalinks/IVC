@@ -61,12 +61,11 @@ include("header.php");
                         <p style="font-size:1.5em; text-align:center; text-decoration:underline;">For the Industry</p>
                         <p>As a hotel, resort, travel agent, car rental, tour service, or any other travel related business, you need strategies for more customers, more revenue, more profit.</p>
                         <p>As an IVC Partner, your services will be showcased to our millions of IVC Members from all over the world.</p>
-                        <p>Hotels, travel agencies, resorts, and other travel businesses: log in with your SafeZone account, or list your company in the partner directory.</p>
+                        <p>Hotels, travel agencies, resorts, and other travel businesses: register with your SafeZone account. IVC admin approves each partner before they appear in the directory.</p>
                     </div>
                     <div class="card-footerx" style="padding-bottom:15px;">
-                        <p style="text-align:center;"><a href="<?= htmlspecialchars($base) ?>/ivc/login.php?role=partner" class="btn btn-primary btn-lg ivc-cta" style="background:#018EF2; border-color:#018EF2;">PARTNER LOGIN</a></p>
+                        <p style="text-align:center;"><a href="<?= htmlspecialchars($base) ?>/ivc/login.php?role=partner" class="btn btn-primary btn-lg ivc-cta" style="background:#018EF2; border-color:#018EF2;">REGISTER / LOGIN AS PARTNER</a></p>
                         <p style="text-align:center;"><a href="<?= htmlspecialchars($base) ?>/ivc/partners.php" class="btn btn-primary btn-lg ivc-cta" style="background:#650B14; border-color:#650B14;">PARTNER DIRECTORY</a></p>
-                        <p style="text-align:center;"><a href="<?= htmlspecialchars($base) ?>/ivc/partner_submit.php" class="btn btn-primary btn-lg ivc-cta" style="background:#018EF2; border-color:#018EF2;">LIST YOUR BUSINESS</a></p>
                     </div>
                 </div>
             </div>
