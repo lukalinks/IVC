@@ -199,6 +199,47 @@ function safezone_local_verify_pin($uid, $pin, $key)
 	return ivc_pin_challenge_ok($masterPin, $pin, $skey);
 }
 
+function safezone_post_plain($url, $postData)
+{
+	list($response, $curlError) = safezone_curl_post($url, $postData);
+	if ($curlError !== '') {
+		return array('ok' => false, 'error' => 'Unable to reach SafeZone service. Please try again.');
+	}
+
+	return array('ok' => true, 'body' => trim((string) $response));
+}
+
+function safezone_response_is_success($body)
+{
+	$body = trim(strtolower((string) $body));
+	return $body === 'success' || $body === '"success"' || $body === 'ok';
+}
+
+function safezone_forgot_pernum($email, $password)
+{
+	return safezone_post_plain('https://safe.zone/signup/forgot_pernum.php', array(
+		'email' => $email,
+		'password' => $password,
+	));
+}
+
+function safezone_forgot_password($pernum, $pin, $match)
+{
+	return safezone_post_plain('https://safe.zone/signup/forgot_password.php', array(
+		'pernum' => $pernum,
+		'pin' => $pin,
+		'match' => $match,
+	));
+}
+
+function safezone_forgot_mp($email, $password)
+{
+	return safezone_post_plain('https://safe.zone/signup/forgot_mp.php', array(
+		'email' => $email,
+		'password' => $password,
+	));
+}
+
 function safezone_login_success_payload($uid, $pernum, $localUid = 0)
 {
 	$pinKey = safezone_pin_key();

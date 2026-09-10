@@ -45,6 +45,11 @@ td {
                                                 <input class="form-control" name="password" id="password" autocomplete="off" type="password" value="" placeholder="Password" style="background:none; border-color:#cc0000; margin:0 auto; margin-top:10px; color:#cc0000; max-width:245px;">
                                                 <button type="submit" class="btn btn-primary" style="background-color:#cc0000; border-color:#cc0000; margin-top:30px; color:#fff; font-weight:bold; max-width:245px; width:100%;">LOG IN</button>
                                             </form>
+                                            <p style="margin-top:18px; font-size:13px; line-height:1.6;">
+                                                <a href="javascript:void(0);" onclick="showForgotPanel('pernum');" style="color:#650B14;">Forgot Account #?</a><br>
+                                                <a href="javascript:void(0);" onclick="showForgotPanel('password');" style="color:#650B14;">Forgot Password?</a><br>
+                                                <a href="javascript:void(0);" onclick="showForgotPanel('mp');" style="color:#650B14;">Forgot Master PIN?</a>
+                                            </p>
                                         </div>
                                     </div>
                                 
@@ -54,6 +59,83 @@ td {
                             </div>
                         </div>
 
+                        <div id="divforgotpernum" class="row text-center" style="margin-top:0px; color:#cc0000; padding:15px; display:none;">
+                            <div class="col-sm-12" style="padding:15px;">
+                                <div class="card" style="max-width:400px; margin:0 auto; background:none; border-color:#cc0000; width:100%;">
+                                    <div class="card-header" style="border-bottom: 1px solid rgba(204, 0, 0, .5);">FORGOT ACCOUNT #</div>
+                                    <div class="card-body text-center">
+                                        <p id="forgotpernumerr" class="alert alert-danger" style="display:none;"></p>
+                                        <p id="forgotpernumok" class="alert alert-success" style="display:none;"></p>
+                                        <p style="color:#650B14; font-size:14px;">Enter the email and password registered with your SafeZone account.</p>
+                                        <input class="form-control" id="forgotpernum_email" type="email" placeholder="Email" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:16px; max-width:245px;">
+                                        <input class="form-control" id="forgotpernum_password" type="password" placeholder="Password" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:10px; max-width:245px;">
+                                        <button type="button" class="btn btn-primary" onclick="submitForgotPernum();" style="background-color:#cc0000; border-color:#cc0000; margin-top:20px; color:#fff; font-weight:bold; max-width:245px; width:100%;">SUBMIT</button>
+                                        <p style="margin-top:16px;"><a href="javascript:void(0);" onclick="showLoginPanel();" style="color:#650B14;">Back to login</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="divforgotpassword" class="row text-center" style="margin-top:0px; color:#cc0000; padding:15px; display:none;">
+                            <div class="col-sm-12" style="padding:15px;">
+                                <div class="card" style="max-width:400px; margin:0 auto; background:none; border-color:#cc0000; width:100%;">
+                                    <div class="card-header" style="border-bottom: 1px solid rgba(204, 0, 0, .5);">FORGOT PASSWORD</div>
+                                    <div class="card-body text-center">
+                                        <p id="forgotpasserr" class="alert alert-danger" style="display:none;"></p>
+                                        <p id="forgotpassok" class="alert alert-success" style="display:none;"></p>
+                                        <div id="forgotpass_step1">
+                                            <p style="color:#650B14; font-size:14px;">Enter your SafeZone account number to continue.</p>
+                                            <input class="form-control" id="forgotpass_pernum" type="text" inputmode="numeric" placeholder="Account #" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:16px; max-width:245px;">
+                                            <button type="button" class="btn btn-primary" onclick="startForgotPassword();" style="background-color:#cc0000; border-color:#cc0000; margin-top:20px; color:#fff; font-weight:bold; max-width:245px; width:100%;">CONTINUE</button>
+                                        </div>
+                                        <div id="forgotpass_step2" style="display:none;">
+                                            <p id="forgotpass_pintext" style="color:#650B14; font-size:16px; min-height:48px;"></p>
+                                            <input class="form-control" id="forgotpass_pin" type="password" inputmode="numeric" placeholder="3 requested digits" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:16px; max-width:245px;">
+                                            <table width="245" border="1" cellspacing="0" cellpadding="0" style="margin:0 auto; margin-top:10px; border-color:#cc0000;">
+                                                <tr>
+                                                    <td style="width:33.33%;" onClick="forgotPassKeypad(this, 1)">1</td>
+                                                    <td style="width:33.33%;" onClick="forgotPassKeypad(this, 2)">2</td>
+                                                    <td style="width:33.33%;" onClick="forgotPassKeypad(this, 3)">3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td onClick="forgotPassKeypad(this, 4)">4</td>
+                                                    <td onClick="forgotPassKeypad(this, 5)">5</td>
+                                                    <td onClick="forgotPassKeypad(this, 6)">6</td>
+                                                </tr>
+                                                <tr>
+                                                    <td onClick="forgotPassKeypad(this, 7)">7</td>
+                                                    <td onClick="forgotPassKeypad(this, 8)">8</td>
+                                                    <td onClick="forgotPassKeypad(this, 9)">9</td>
+                                                </tr>
+                                                <tr>
+                                                    <td onClick="forgotPassKeypad(this, 0)">0</td>
+                                                    <td onClick="forgotPassKeypad(this, 'b')" colspan="2"><img src="https://safe.zone/images/backspace.png" width="34" height="23" alt=""/></td>
+                                                </tr>
+                                            </table>
+                                            <button type="button" class="btn btn-primary" onclick="submitForgotPassword();" style="background-color:#cc0000; border-color:#cc0000; margin-top:20px; color:#fff; font-weight:bold; max-width:245px; width:100%;">SUBMIT</button>
+                                        </div>
+                                        <p style="margin-top:16px;"><a href="javascript:void(0);" onclick="showLoginPanel();" style="color:#650B14;">Back to login</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="divforgotmp" class="row text-center" style="margin-top:0px; color:#cc0000; padding:15px; display:none;">
+                            <div class="col-sm-12" style="padding:15px;">
+                                <div class="card" style="max-width:400px; margin:0 auto; background:none; border-color:#cc0000; width:100%;">
+                                    <div class="card-header" style="border-bottom: 1px solid rgba(204, 0, 0, .5);">FORGOT MASTER PIN</div>
+                                    <div class="card-body text-center">
+                                        <p id="forgotmperr" class="alert alert-danger" style="display:none;"></p>
+                                        <p id="forgotmpok" class="alert alert-success" style="display:none;"></p>
+                                        <p style="color:#650B14; font-size:14px;">Enter the email and password registered with your SafeZone account.</p>
+                                        <input class="form-control" id="forgotmp_email" type="email" placeholder="Email" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:16px; max-width:245px;">
+                                        <input class="form-control" id="forgotmp_password" type="password" placeholder="Password" style="background:none; border-color:#cc0000; color:#cc0000; margin:0 auto; margin-top:10px; max-width:245px;">
+                                        <button type="button" class="btn btn-primary" onclick="submitForgotMp();" style="background-color:#cc0000; border-color:#cc0000; margin-top:20px; color:#fff; font-weight:bold; max-width:245px; width:100%;">SUBMIT</button>
+                                        <p style="margin-top:16px;"><a href="javascript:void(0);" onclick="showLoginPanel();" style="color:#650B14;">Back to login</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div id="divpin" class="row text-center" style="margin-top:0px; color:#cc0000; padding:15px; display:none;">
                             <div class="col-sm-12">
@@ -116,6 +198,8 @@ var currentUid = '';
 var currentPernum = '';
 var currentPinKey = '';
 var pinReady = false;
+var forgotPassPernum = '';
+var forgotPassPinKey = '';
 
 function ivcEl(id) {
     return document.getElementById(id);
@@ -135,6 +219,268 @@ function ivcHide(id) {
     }
 }
 
+function ivcHideForgotPanels() {
+    ivcHide('divforgotpernum');
+    ivcHide('divforgotpassword');
+    ivcHide('divforgotmp');
+}
+
+function ivcClearForgotAlerts(prefix) {
+    var err = ivcEl(prefix + 'err');
+    var ok = ivcEl(prefix + 'ok');
+    if (err) {
+        err.style.display = 'none';
+        err.textContent = '';
+    }
+    if (ok) {
+        ok.style.display = 'none';
+        ok.textContent = '';
+    }
+}
+
+function showLoginPanel() {
+    ivcHide('divpin');
+    ivcHideForgotPanels();
+    ivcShow('divlogin');
+    pinReady = false;
+    currentUid = '';
+    currentPernum = '';
+    currentPinKey = '';
+    forgotPassPernum = '';
+    forgotPassPinKey = '';
+}
+
+function showForgotPanel(kind) {
+    ivcHide('divlogin');
+    ivcHide('divpin');
+    ivcHideForgotPanels();
+    pinReady = false;
+    if (kind === 'pernum') {
+        ivcClearForgotAlerts('forgotpernum');
+        ivcShow('divforgotpernum');
+    } else if (kind === 'password') {
+        ivcClearForgotAlerts('forgotpass');
+        forgotPassPernum = '';
+        forgotPassPinKey = '';
+        var step1 = ivcEl('forgotpass_step1');
+        var step2 = ivcEl('forgotpass_step2');
+        if (step1) {
+            step1.style.display = '';
+        }
+        if (step2) {
+            step2.style.display = 'none';
+        }
+        var pinInput = ivcEl('forgotpass_pin');
+        if (pinInput) {
+            pinInput.value = '';
+        }
+        ivcShow('divforgotpassword');
+    } else if (kind === 'mp') {
+        ivcClearForgotAlerts('forgotmp');
+        ivcShow('divforgotmp');
+    }
+}
+
+function ivcForgotFetch(body) {
+    return fetch('safezone.forgot.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    }).then(function (response) {
+        return response.text().then(function (text) {
+            var result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                throw new Error('Service returned an invalid response. Please try again.');
+            }
+            return result;
+        });
+    });
+}
+
+function submitForgotPernum() {
+    ivcClearForgotAlerts('forgotpernum');
+    var email = (ivcEl('forgotpernum_email') ? ivcEl('forgotpernum_email').value : '').trim();
+    var password = (ivcEl('forgotpernum_password') ? ivcEl('forgotpernum_password').value : '').trim();
+    if (email === '' || password === '') {
+        var err = ivcEl('forgotpernumerr');
+        if (err) {
+            err.textContent = 'Please enter your email and password.';
+            err.style.display = 'block';
+        }
+        return;
+    }
+    ivcForgotFetch({ action: 'pernum', email: email, password: password })
+        .then(function (result) {
+            if (!result.success) {
+                var fail = ivcEl('forgotpernumerr');
+                if (fail) {
+                    fail.textContent = result.message || 'Invalid email/password.';
+                    fail.style.display = 'block';
+                }
+                return;
+            }
+            var ok = ivcEl('forgotpernumok');
+            if (ok) {
+                ok.textContent = result.message || 'Request submitted successfully.';
+                ok.style.display = 'block';
+            }
+        })
+        .catch(function (err) {
+            var fail = ivcEl('forgotpernumerr');
+            if (fail) {
+                fail.textContent = (err && err.message) ? err.message : 'Request failed. Please try again.';
+                fail.style.display = 'block';
+            }
+        });
+}
+
+function applyForgotPasswordPrompt(result) {
+    forgotPassPinKey = String(result.pin_key || '');
+    var pinText = ivcEl('forgotpass_pintext');
+    if (pinText) {
+        pinText.textContent = result.prompt || 'Enter the 3 requested digits of your Master PIN.';
+    }
+    var pinInput = ivcEl('forgotpass_pin');
+    if (pinInput) {
+        pinInput.value = '';
+    }
+}
+
+function startForgotPassword() {
+    ivcClearForgotAlerts('forgotpass');
+    var pernum = (ivcEl('forgotpass_pernum') ? ivcEl('forgotpass_pernum').value : '').replace(/\D/g, '');
+    if (pernum === '') {
+        var err = ivcEl('forgotpasserr');
+        if (err) {
+            err.textContent = 'Please enter your account number.';
+            err.style.display = 'block';
+        }
+        return;
+    }
+    forgotPassPernum = pernum;
+    ivcForgotFetch({ action: 'password_init' })
+        .then(function (result) {
+            if (!result.success) {
+                throw new Error(result.message || 'Unable to start password reset.');
+            }
+            applyForgotPasswordPrompt(result);
+            ivcHide('forgotpass_step1');
+            ivcShow('forgotpass_step2');
+        })
+        .catch(function (err) {
+            var fail = ivcEl('forgotpasserr');
+            if (fail) {
+                fail.textContent = (err && err.message) ? err.message : 'Request failed. Please try again.';
+                fail.style.display = 'block';
+            }
+        });
+}
+
+function submitForgotPassword() {
+    ivcClearForgotAlerts('forgotpass');
+    var pin = (ivcEl('forgotpass_pin') ? ivcEl('forgotpass_pin').value : '').replace(/\D/g, '');
+    if (forgotPassPernum === '' || forgotPassPinKey.length !== 3) {
+        var err = ivcEl('forgotpasserr');
+        if (err) {
+            err.textContent = 'Please enter your account number and wait for the PIN prompt.';
+            err.style.display = 'block';
+        }
+        return;
+    }
+    if (pin === '') {
+        var pinErr = ivcEl('forgotpasserr');
+        if (pinErr) {
+            pinErr.textContent = 'Enter the 3 digits shown in the PIN prompt.';
+            pinErr.style.display = 'block';
+        }
+        return;
+    }
+    ivcForgotFetch({
+        action: 'password',
+        pernum: forgotPassPernum,
+        pin: pin,
+        match: forgotPassPinKey
+    })
+        .then(function (result) {
+            if (!result.success) {
+                var fail = ivcEl('forgotpasserr');
+                if (fail) {
+                    fail.textContent = result.message || 'PIN does not match.';
+                    fail.style.display = 'block';
+                }
+                if (result.pin_key) {
+                    applyForgotPasswordPrompt(result);
+                }
+                return;
+            }
+            ivcHide('forgotpass_step1');
+            ivcHide('forgotpass_step2');
+            var ok = ivcEl('forgotpassok');
+            if (ok) {
+                ok.textContent = result.message || 'Request submitted successfully.';
+                ok.style.display = 'block';
+            }
+        })
+        .catch(function (err) {
+            var fail = ivcEl('forgotpasserr');
+            if (fail) {
+                fail.textContent = (err && err.message) ? err.message : 'Request failed. Please try again.';
+                fail.style.display = 'block';
+            }
+        });
+}
+
+function submitForgotMp() {
+    ivcClearForgotAlerts('forgotmp');
+    var email = (ivcEl('forgotmp_email') ? ivcEl('forgotmp_email').value : '').trim();
+    var password = (ivcEl('forgotmp_password') ? ivcEl('forgotmp_password').value : '').trim();
+    if (email === '' || password === '') {
+        var err = ivcEl('forgotmperr');
+        if (err) {
+            err.textContent = 'Please enter your email and password.';
+            err.style.display = 'block';
+        }
+        return;
+    }
+    ivcForgotFetch({ action: 'mp', email: email, password: password })
+        .then(function (result) {
+            if (!result.success) {
+                var fail = ivcEl('forgotmperr');
+                if (fail) {
+                    fail.textContent = result.message || 'Invalid email address or password.';
+                    fail.style.display = 'block';
+                }
+                return;
+            }
+            var ok = ivcEl('forgotmpok');
+            if (ok) {
+                ok.textContent = result.message;
+                ok.style.display = 'block';
+            }
+        })
+        .catch(function (err) {
+            var fail = ivcEl('forgotmperr');
+            if (fail) {
+                fail.textContent = (err && err.message) ? err.message : 'Request failed. Please try again.';
+                fail.style.display = 'block';
+            }
+        });
+}
+
+function forgotPassKeypad(td, key) {
+    var pinInput = ivcEl('forgotpass_pin');
+    if (!pinInput) {
+        return;
+    }
+    if (key === 'b') {
+        pinInput.value = pinInput.value.slice(0, -1);
+    } else if (pinInput.value.length < 6) {
+        pinInput.value = pinInput.value + key;
+    }
+}
+
 function showLoginError(msg) {
     var err = ivcEl('err');
     if (err) {
@@ -142,6 +488,7 @@ function showLoginError(msg) {
         err.style.display = 'block';
     }
     ivcHide('divpin');
+    ivcHideForgotPanels();
     ivcShow('divlogin');
     var pinInput = ivcEl('pin');
     if (pinInput) {
@@ -202,6 +549,7 @@ function startLogin()
     if (pinText) {
         pinText.textContent = 'Checking account...';
     }
+    ivcHideForgotPanels();
     ivcHide('divlogin');
     ivcShow('divpin');
 
@@ -338,9 +686,7 @@ function keypad(td, key)
 
     if (key === 'b') {
         if (pinInput.value === '') {
-            ivcShow('divlogin');
-            ivcHide('divpin');
-            pinReady = false;
+            showLoginPanel();
         } else {
             pinInput.value = pinInput.value.slice(0, -1);
         }
