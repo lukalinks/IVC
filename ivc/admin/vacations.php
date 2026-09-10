@@ -20,7 +20,7 @@ if (admin_posted() && isset($_POST['create'])) {
 
 $rows = admin_query("SELECT v.*, (SELECT COALESCE(SUM(qty),0) FROM ivc_reservations r WHERE r.vid=v.id) reserved FROM ivc_vacations v ORDER BY v.id DESC") ?: array();
 
-admin_layout_start('Vacations', 'vacations');
+admin_layout_start('Vacation packages', 'vacations');
 ?>
 <div class="panel">
     <div class="table-wrap">

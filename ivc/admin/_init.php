@@ -169,27 +169,99 @@ function admin_pager($page, $pages, $query)
     echo '</nav>';
 }
 
-function admin_nav_items()
+function admin_nav_groups()
 {
     return array(
-        'dashboard' => array('Dashboard', 'index.php'),
-        'members' => array('Members', 'members.php'),
-        'bookings' => array('Bookings', 'bookings.php'),
-        'listings' => array('Partners', 'listings.php'),
-        'resorts' => array('Resorts', 'resorts.php'),
-        'memberships' => array('Memberships', 'memberships.php'),
-        'vacations' => array('Vacations', 'vacations.php'),
-        'reservations' => array('Reservations', 'reservations.php'),
-        'codes' => array('Invite codes', 'codes.php'),
-        'settings' => array('Settings', 'settings.php'),
-        'logs' => array('Activity log', 'logs.php'),
+        array(
+            'label' => 'Overview',
+            'items' => array(
+                'dashboard' => array('Dashboard', 'index.php'),
+            ),
+        ),
+        array(
+            'label' => 'Members',
+            'items' => array(
+                'members' => array('Members', 'members.php'),
+                'memberships' => array('Memberships', 'memberships.php'),
+                'codes' => array('Invite codes', 'codes.php'),
+            ),
+        ),
+        array(
+            'label' => 'Travel',
+            'items' => array(
+                'bookings' => array('Resort bookings', 'bookings.php'),
+                'resorts' => array('Resorts', 'resorts.php'),
+                'vacations' => array('Vacation packages', 'vacations.php'),
+                'reservations' => array('Vacation reservations', 'reservations.php'),
+            ),
+        ),
+        array(
+            'label' => 'Partners',
+            'items' => array(
+                'listings' => array('Applications', 'listings.php'),
+            ),
+        ),
+        array(
+            'label' => 'System',
+            'items' => array(
+                'settings' => array('Settings', 'settings.php'),
+                'logs' => array('Activity log', 'logs.php'),
+            ),
+        ),
     );
 }
 
-function admin_layout_start($title, $navKey)
+function admin_nav_items()
+{
+    $items = array();
+    foreach (admin_nav_groups() as $group) {
+        foreach ($group['items'] as $key => $item) {
+            $items[$key] = $item;
+        }
+    }
+    return $items;
+}
+
+function admin_page_subtitle($navKey)
+{
+    $copy = array(
+        'dashboard' => 'Members, travel, and partner applications at a glance',
+        'members' => 'Search, create, and manage member accounts',
+        'memberships' => 'Paid and pending club membership records',
+        'codes' => 'Invitation codes for new member sign-up',
+        'bookings' => 'Member requests for IVC resorts',
+        'resorts' => 'Resort catalog shown on the member home page',
+        'vacations' => 'Packaged trips and available seats',
+        'reservations' => 'Seats booked against vacation packages',
+        'listings' => 'Industry partners must be approved before they appear in the directory',
+        'settings' => 'Platform switches and administrator access',
+        'logs' => 'Record of changes made in this console',
+    );
+    return isset($copy[$navKey]) ? $copy[$navKey] : 'International Vacation Club platform control';
+}
+
+function admin_nav_badges()
+{
+    static $badges = null;
+    if ($badges !== null) {
+        return $badges;
+    }
+    $badges = array(
+        'bookings' => admin_count("SELECT COUNT(*) c FROM ivc_bookings WHERE status='pending' OR status='' OR status IS NULL"),
+        'listings' => admin_count("SELECT COUNT(*) c FROM ivc_listings WHERE status='pending'"),
+    );
+    return $badges;
+}
+
+function admin_layout_start($title, $navKey, $subtitle = '')
 {
     $flash = admin_take_flash();
-    $items = admin_nav_items();
+    $groups = admin_nav_groups();
+    $badges = admin_nav_badges();
+    if ($subtitle === '') {
+        $subtitle = admin_page_subtitle($navKey);
+    }
+    $account = function_exists('ivc_session_pernum') ? ivc_session_pernum() : '';
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -201,30 +273,40 @@ function admin_layout_start($title, $navKey)
 </head>
 <body>
 <div class="admin-app">
-    <aside class="admin-side">
+    <aside class="admin-side" id="adminSide">
         <a class="admin-brand" href="index.php">
             <img src="../assets/img/Picture7.png" alt="IVC">
             <span>Admin Console</span>
         </a>
         <nav>
-            <?php foreach ($items as $key => $item): ?>
-                <a class="<?= $key === $navKey ? 'is-active' : '' ?>" href="<?= admin_h($item[1]) ?>"><?= admin_h($item[0]) ?></a>
+            <?php foreach ($groups as $group): ?>
+                <p class="admin-nav-label"><?= admin_h($group['label']) ?></p>
+                <?php foreach ($group['items'] as $key => $item): ?>
+                    <a class="<?= $key === $navKey ? 'is-active' : '' ?>" href="<?= admin_h($item[1]) ?>">
+                        <span><?= admin_h($item[0]) ?></span>
+                        <?php if (!empty($badges[$key])): ?>
+                            <em class="admin-nav-count"><?= (int) $badges[$key] ?></em>
+                        <?php endif; ?>
+                    </a>
+                <?php endforeach; ?>
             <?php endforeach; ?>
         </nav>
         <div class="admin-side-foot">
             <a href="../home.php">Member site</a>
+            <a href="../partners.php">Partner directory</a>
             <a href="../logout.php">Log out</a>
         </div>
     </aside>
     <div class="admin-main">
         <header class="admin-top">
             <div>
+                <button class="admin-menu-btn" type="button" onclick="document.getElementById('adminSide').classList.toggle('is-open')">Menu</button>
                 <h1><?= admin_h($title) ?></h1>
-                <p>International Vacation Club platform control</p>
+                <p><?= admin_h($subtitle) ?></p>
             </div>
             <div class="admin-user">
                 <strong><?= admin_h($GLOBALS['adminEmail'] !== '' ? $GLOBALS['adminEmail'] : ('UID ' . $GLOBALS['adminUid'])) ?></strong>
-                <span>Administrator · <?= (int) $GLOBALS['adminUid'] ?></span>
+                <span>Administrator<?= $account !== '' ? ' · Account # ' . admin_h($account) : ' · UID ' . (int) $GLOBALS['adminUid'] ?></span>
             </div>
         </header>
         <?php if ($flash): ?>

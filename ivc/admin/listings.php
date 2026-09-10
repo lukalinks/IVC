@@ -35,6 +35,13 @@ admin_layout_start('Partner applications', 'listings');
 $qs = array('status' => $status, 'type' => $type, 'q' => $q);
 ?>
 <div class="panel">
+    <div class="toolbar">
+        <a class="btn<?= $status === '' ? '' : ' btn-ghost' ?>" href="listings.php">All</a>
+        <a class="btn<?= $status === 'pending' ? '' : ' btn-ghost' ?>" href="listings.php?status=pending">Pending</a>
+        <a class="btn<?= $status === 'approved' ? '' : ' btn-ghost' ?>" href="listings.php?status=approved">Approved</a>
+        <a class="btn<?= $status === 'rejected' ? '' : ' btn-ghost' ?>" href="listings.php?status=rejected">Rejected</a>
+        <a class="btn btn-ok" href="listing.php">Add listing</a>
+    </div>
     <form class="toolbar" method="get">
         <input type="text" name="q" value="<?= admin_h($q) ?>" placeholder="Name, email, city">
         <select name="status">
@@ -50,12 +57,14 @@ $qs = array('status' => $status, 'type' => $type, 'q' => $q);
             <?php endforeach; ?>
         </select>
         <button class="btn" type="submit">Filter</button>
-        <a class="btn btn-ghost" href="listing.php">Add listing</a>
     </form>
     <p class="muted"><?= (int) $total ?> listing<?= $total === 1 ? '' : 's' ?></p>
     <div class="table-wrap">
         <table class="admin">
             <tr><th>ID</th><th>Name</th><th>Type</th><th>Location</th><th>Email</th><th>Status</th><th></th></tr>
+            <?php if (!$rows): ?>
+                <tr><td colspan="7" class="muted">No partner applications match these filters.</td></tr>
+            <?php endif; ?>
             <?php foreach ($rows as $row): ?>
                 <tr>
                     <td><?= (int) $row['id'] ?></td>

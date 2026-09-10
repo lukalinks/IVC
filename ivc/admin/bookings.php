@@ -47,7 +47,7 @@ $rows = admin_query(
     $params
 ) ?: array();
 
-admin_layout_start('Bookings', 'bookings');
+admin_layout_start('Resort bookings', 'bookings');
 $qs = array('q' => $q, 'status' => $status);
 ?>
 <div class="panel">

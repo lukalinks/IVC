@@ -72,9 +72,9 @@ if (admin_posted()) {
     admin_go('listing.php?id=' . $newId);
 }
 
-admin_layout_start($id ? 'Listing #' . $id : 'New listing', 'listings');
+admin_layout_start($id ? 'Listing #' . $id : 'New partner listing', 'listings');
 ?>
-<p><a href="listings.php">← All listings</a></p>
+<p><a href="listings.php">← All partner applications</a></p>
 <div class="panel">
     <form method="post" class="form-grid">
         <?php admin_csrf_field(); ?>

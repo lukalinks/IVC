@@ -32,7 +32,7 @@ $rows = admin_query(
     $params
 ) ?: array();
 
-admin_layout_start('Reservations', 'reservations');
+admin_layout_start('Vacation reservations', 'reservations');
 ?>
 <div class="panel">
     <form class="toolbar" method="get">
