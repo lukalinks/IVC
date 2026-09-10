@@ -88,7 +88,11 @@ if (!$mysqli) {
 $mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, 8);
 $connected = @$mysqli->real_connect(SERVER_IVC, USER_IVC, PASS_IVC, NAME_IVC);
 if (!$connected) {
-	ivc_config_fail('Database connection failed. Check ivc/db-config2.php or /home/db-config2.php on the server.');
+	$detail = $mysqli->connect_error ? trim((string) $mysqli->connect_error) : 'unknown error';
+	ivc_config_fail(
+		'Database connection failed (' . $detail . '). '
+		. 'Update /home/db-config2.php or ivc/db-config2.php with your cPanel MySQL host, database name, username, and password.'
+	);
 }
 
 $GLOBALS['mysqli'] = $mysqli;

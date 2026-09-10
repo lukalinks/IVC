@@ -2,6 +2,11 @@
 /**
  * Copy this file to db-config2.php and set your database credentials.
  * db-config2.php is gitignored and stays on each server.
+ *
+ * Production (cPanel): see db-config.production.example.php
+ * Server paths checked by config.php (Linux first):
+ *   /home/db-config2.php
+ *   ivc/db-config2.php
  */
 if (!defined('DB_SERVER')) {
 	define('DB_SERVER', '127.0.0.1');

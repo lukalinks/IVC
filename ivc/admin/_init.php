@@ -79,13 +79,33 @@ function admin_query($sql, $types = '', array $params = array())
         $stmt->close();
         return false;
     }
-    $res = $stmt->get_result();
-    $rows = array();
-    if ($res) {
-        while ($row = $res->fetch_assoc()) {
-            $rows[] = $row;
-        }
+
+    $meta = $stmt->result_metadata();
+    if (!$meta) {
+        $stmt->close();
+        return array();
     }
+
+    $fields = array();
+    $row = array();
+    $refs = array();
+    while ($field = $meta->fetch_field()) {
+        $fields[] = $field->name;
+        $row[$field->name] = null;
+        $refs[] = &$row[$field->name];
+    }
+    call_user_func_array(array($stmt, 'bind_result'), $refs);
+
+    $rows = array();
+    while ($stmt->fetch()) {
+        $copy = array();
+        foreach ($fields as $fieldName) {
+            $copy[$fieldName] = $row[$fieldName];
+        }
+        $rows[] = $copy;
+    }
+
+    $meta->close();
     $stmt->close();
     return $rows;
 }
